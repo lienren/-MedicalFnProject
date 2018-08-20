@@ -78,7 +78,7 @@ export default {
     },
     text: {
       type: String,
-      default: 'Loading'
+      default: '加载中'
     }
   },
   computed: {},

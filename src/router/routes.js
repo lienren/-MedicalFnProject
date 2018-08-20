@@ -1,8 +1,8 @@
 /*
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
- * @Last Modified by:   Lienren
- * @Last Modified time: 2018-08-19 10:08:52
+ * @Last Modified by: Lienren
+ * @Last Modified time: 2018-08-19 13:47:06
  */
 'use strict'
 
@@ -66,6 +66,12 @@ export default [
         name: '日志查看',
         component: view('manage/Logs'),
         meta: { title: '日志查看' }
+      },
+      {
+        path: '/setpassword',
+        name: '修改个人密码',
+        component: view('manage/SetPassword'),
+        meta: { title: '修改个人密码' }
       }
     ]
   }

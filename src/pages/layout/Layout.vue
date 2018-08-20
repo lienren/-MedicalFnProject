@@ -30,7 +30,7 @@ export default {
           icon: 'desktop'
         },
         {
-          id: '/lists',
+          id: '/sysmanage',
           name: '系统管理',
           icon: 'setting',
           children: [
@@ -54,7 +54,7 @@ export default {
         }
       ],
       crumbs: [],
-      badgeNumber: 100,
+      badgeNumber: 0,
       cardIsShow: false,
       spinning: true
     }
@@ -74,8 +74,23 @@ export default {
       return this.$utils.Common.getWidthHeight().height - 40 - 16 - 30 + 'px'
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.init()
+    })
+  },
   methods: {
+    init () {
+      let userinfo = this.$utils.Store.get('userinfo')
+
+      if (userinfo === null || userinfo === undefined || userinfo === {}) {
+        // 未登录状态下，进入登录页面
+        this.$router.push({ path: '/login' })
+      }
+    },
     logout () {
+      // 清除登录状态
+      this.$utils.Store.clear('userinfo')
       // 路由跳转
       this.$router.push({ path: '/login' })
     },
@@ -124,8 +139,8 @@ export default {
       }
     },
     clickHead () {
-      this.$message.success('点击头像!')
-      this.cardIsShow = !this.cardIsShow
+      this.crumbs = [{ name: '系统管理' }, { name: '修改密码' }]
+      this.$router.push({ path: '/setpassword' })
     },
     clickSetting () {
       this.$message.success('点击设置按钮!')

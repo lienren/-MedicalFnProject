@@ -17,10 +17,10 @@
       <span slot="action" slot-scope="text, record">
         <template v-for="(item, index) in actionBtns">
           <a-popconfirm v-if="item.confirm" :key="`btn_confirm_${index}`" :title="item.confirm.title" @confirm="item.confirm.confirm(record)" @cancel="item.confirm.cancel?item.confirm.cancel(record):()=>{}" :okText="item.confirm.okText || '确认'" :cancelText="item.confirm.cancelText || '取消'">
-            <a :key="`btn_${index}`" :style="item.style">{{item.text}}</a>
+            <a :key="`btn_${index}`" :style="item.style">{{item.dynamicText?item.dynamicText(record):item.text}}</a>
           </a-popconfirm>
-          <a v-else :key="`btn_${index}`" @click="item.click(record)" :style="item.style">{{item.text}}</a>
-          <a-divider v-if="index < actionBtns.length - 1" :key="`div_${index}`" type="vertical" /> {{text}}
+          <a v-else :key="`btn_${index}`" @click="item.click(record)" :style="item.style">{{item.dynamicText?item.dynamicText(record):item.text}}</a>
+          <a-divider v-if="index < actionBtns.length - 1" :key="`div_${index}`" type="vertical" />
         </template>
       </span>
     </a-table>

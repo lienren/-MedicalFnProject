@@ -1,17 +1,114 @@
 <template>
   <div>
-    管理员管理
+    <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
+    <a-modal :title="cuTitle" v-model="cuVisible" @ok="addOrupdateAction" :okText="cuConfirmText" cancelText="取消" :confirmLoading="cuConfirmLoading">
+      <a-form>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='登录名'>
+          <a-input placeholder='请输入登录名' v-model="managerInfo.loginName" :readOnly="managerInfo.id>0"></a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='登录密码'>
+          <a-input placeholder='请输入登录密码' v-model="managerInfo.loginPwd" type="password">
+          </a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='真实姓名'>
+          <a-input placeholder='请输入真实姓名' v-model="managerInfo.realName" :readOnly="managerInfo.id===1">
+          </a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='手机号'>
+          <a-input placeholder='请输入手机号' v-model="managerInfo.phone">
+          </a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='状态'>
+          <a-switch checkedChildren="开启" unCheckedChildren="关闭" v-model="managerInfo.stateSwitch" :disabled="managerInfo.id===1" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal title="搜索条件" v-model="searchVisible" @ok="searchAction" :okText="searchConfirmText" cancelText="取消" :confirmLoading="searchConfirmLoading">
+      <a-form>
+        <a-row>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='登录名'>
+              <a-input placeholder='请输入登录名' v-model="search.loginName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='真实姓名'>
+              <a-input placeholder='请输入真实姓名' v-model="search.realName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='手机号'>
+              <a-input placeholder='请输入手机号' v-model="search.phone"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24" style="display:block;">
+            <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='状态'>
+              <a-radio-group @change="(e)=>{search.state=parseInt(e.target.value)}" :defaultValue="`${search.state}`">
+                <a-radio-button value="-1">全部</a-radio-button>
+                <a-radio-button value="1">已开启</a-radio-button>
+                <a-radio-button value="0">已关闭</a-radio-button>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script>
+import api from '../../api/manage'
+import { iTable } from '../../components/'
 
 export default {
-  components: {},
-  data () {
-    return {}
+  components: {
+    iTable
   },
-  computed: {},
+  data () {
+    return {
+      labelCol: {
+        span: 4
+      },
+      wrapperCol: {
+        span: 14
+      },
+      wrapperButtonCol: {
+        span: 14, offset: 4
+      },
+      columns: [],
+      data: [],
+      pagination: {},
+      buttons: [],
+      actionButtons: [],
+      cuVisible: false,
+      cuTitle: '新增管理员',
+      cuConfirmLoading: false,
+      cuConfirmText: '确认并保存',
+      searchVisible: false,
+      searchConfirmText: '搜索',
+      searchConfirmLoading: false,
+      managerInfo: {
+        id: 0,
+        loginName: '',
+        loginPwd: '',
+        realName: '',
+        phone: '',
+        state: 1,
+        stateSwitch: true
+      },
+      search: {
+        loginName: '',
+        realName: '',
+        phone: '',
+        state: -1
+      }
+    }
+  },
+  computed: {
+    tableHeight () {
+      return this.$utils.Common.getWidthHeight().height - 188
+    }
+  },
   created () { },
   beforeDestroy () { },
   mounted () {
@@ -21,7 +118,307 @@ export default {
   },
   methods: {
     init () {
-      console.log('userinfo', this.$utils.Store.get('userinfo'))
+      // 分页
+      this.pagination = {
+        pageSize: 20,
+        current: 1,
+        total: 0
+      }
+      // 列头
+      this.columns = [{
+        title: '编号',
+        dataIndex: 'id',
+        width: 50
+      }, {
+        title: '登录名',
+        dataIndex: 'loginName',
+        width: 50
+      }, {
+        title: '真实姓名',
+        dataIndex: 'realName',
+        width: 100
+      }, {
+        title: '手机号',
+        dataIndex: 'phone',
+        width: 100
+      }, {
+        title: '状态',
+        dataIndex: 'stateName',
+        width: 50
+      }, {
+        title: '添加时间',
+        dataIndex: 'addTime',
+        width: 100
+      }, {
+        title: '最后修改时间',
+        dataIndex: 'lastTime',
+        width: 100
+      }, {
+        title: '操作',
+        dataIndex: 'action',
+        scopedSlots: { customRender: 'action' },
+        width: 100
+      }]
+      // 功能按钮
+      this.buttons = [
+        {
+          model: 'button',
+          type: 'primary',
+          icon: 'search',
+          text: '搜索',
+          click: (e) => {
+            /* this.pagination.current = 1
+                                  this.fetch({
+                                    ...this.pagination,
+                                    ...this.search
+                                  }) */
+            this.searchVisible = true
+          }
+        },
+        {
+          model: 'button',
+          icon: 'reload',
+          text: '刷新',
+          click: () => {
+            this.fetch({
+              ...this.pagination,
+              ...this.search
+            })
+          }
+        },
+        {
+          model: 'button',
+          icon: 'edit',
+          text: '新增',
+          click: () => {
+            this.managerInfo = {
+              id: 0,
+              loginName: '',
+              loginPwd: '',
+              realName: '',
+              phone: '',
+              state: 1,
+              stateSwitch: true
+            }
+            this.cuVisible = true
+            this.cuTitle = '新增管理员'
+          }
+        },
+        {
+          model: 'dropdown',
+          text: '选择条件',
+          menus: [
+            {
+              key: '-1',
+              text: '全部'
+            },
+            {
+              key: '1',
+              text: '已开启'
+            },
+            {
+              key: '0',
+              text: '已关闭'
+            }
+          ],
+          click: (e) => {
+            this.search.state = parseInt(e.key)
+            // 分页
+            this.pagination = {
+              pageSize: 20,
+              current: 1,
+              total: 0
+            }
+            this.fetch({
+              ...this.pagination,
+              ...this.search
+            })
+          }
+        }
+      ]
+      // 操作按钮
+      this.actionButtons = [
+        {
+          model: 'button',
+          text: '开启',
+          style: {},
+          icon: 'edit',
+          dynamicText: (e) => {
+            return e.state === 1 ? '关闭' : '开启'
+          },
+          confirm: {
+            title: '确认要更改吗？',
+            confirm: async (e) => {
+              if (e.id === 1) {
+                this.$message.error('超级管理员禁止更新！')
+                return
+              }
+              let result = await api.editManagerState({
+                id: e.id,
+                state: e.state === 1 ? 0 : 1
+              })
+              if (result) {
+                this.$message.success('管理员状态更新成功！')
+                this.fetch({
+                  ...this.pagination,
+                  ...this.search
+                })
+              }
+            },
+            cancel: (e) => { }
+          }
+        },
+        {
+          model: 'button',
+          text: '修改',
+          style: {},
+          icon: 'edit',
+          click: (e) => {
+            this.managerInfo = {
+              id: e.id,
+              loginName: e.loginName,
+              loginPwd: '',
+              realName: e.realName,
+              phone: e.phone,
+              state: e.state,
+              stateSwitch: e.state === 1
+            }
+            this.cuVisible = true
+            this.cuTitle = '修改管理员'
+          }
+        },
+        {
+          model: 'button',
+          text: '删除',
+          style: { color: '#ff0000' },
+          icon: 'edit',
+          confirm: {
+            title: '确认要删除吗？',
+            confirm: async (e) => {
+              if (e.id === 1) {
+                this.$message.error('超级管理员禁止更新！')
+                return
+              }
+              let result = await api.delManager({
+                id: e.id
+              })
+              if (result) {
+                this.$message.success('管理员删除成功！')
+                this.fetch({
+                  ...this.pagination,
+                  ...this.search
+                })
+              }
+            },
+            cancel: (e) => { }
+          }
+        }
+      ]
+      this.fetch({
+        ...this.pagination,
+        ...this.search
+      })
+    },
+    searchInit () {
+      // 分页
+      this.pagination = {
+        pageSize: 20,
+        current: 1,
+        total: 0
+      }
+      this.search = {
+        loginName: '',
+        realName: '',
+        phone: '',
+        state: -1
+      }
+      this.fetch({
+        ...this.pagination,
+        ...this.search
+      })
+    },
+    async fetch (param = {}) {
+      let result = await api.getManagers({
+        ...param
+      })
+      this.searchVisible = false
+      this.searchConfirmText = '搜索'
+      this.searchConfirmLoading = false
+      this.data = []
+      if (result) {
+        result = result.result
+        result.list.forEach(item => {
+          this.data.push({
+            key: item.id,
+            id: item.id,
+            loginName: item.loginName,
+            realName: item.realName,
+            state: item.state,
+            stateName: (item.state === 1 ? '开启' : '关闭'),
+            phone: item.phone,
+            addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss'),
+            lastTime: this.$utils.Date.format(item.lastTime, 'yyyy-MM-dd hh:mm:ss')
+          })
+        })
+        this.pagination = {
+          current: result.current,
+          pageSize: result.pageSize,
+          totle: result.totle
+        }
+      }
+    },
+    handleTableChange (val) {
+      this.pagination = val.pagination
+      this.fetch({
+        ...this.pagination,
+        ...this.search
+      })
+    },
+    async addOrupdateAction () {
+      this.cuConfirmLoading = true
+      this.cuConfirmText = '保存中...'
+      this.managerInfo.state = this.managerInfo.stateSwitch ? 1 : 0
+
+      let result
+      if (this.managerInfo.id > 0) {
+        result = await api.editManager({
+          ...this.managerInfo
+        })
+      } else {
+        result = await api.addManager({
+          ...this.managerInfo
+        })
+      }
+
+      if (result) {
+        this.managerInfo = {
+          id: 0,
+          loginName: '',
+          loginPwd: '',
+          realName: '',
+          phone: '',
+          state: 1,
+          stateSwitch: true
+        }
+        this.cuVisible = false
+        this.cuConfirmLoading = false
+        this.cuConfirmText = '确认并保存'
+        this.searchInit()
+      }
+    },
+    async searchAction () {
+      this.searchConfirmLoading = true
+      this.searchConfirmText = '搜索中...'
+      // 分页
+      this.pagination = {
+        pageSize: 20,
+        current: 1,
+        total: 0
+      }
+      this.fetch({
+        ...this.pagination,
+        ...this.search
+      })
     }
   }
 }

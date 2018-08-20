@@ -2,79 +2,86 @@
  * @Author: Lienren
  * @Date: 2018-08-13 22:29:08
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-08-13 23:19:11
+ * @Last Modified time: 2018-08-19 23:36:01
  */
-'use strict'
+'use strict';
 
-import axios from 'axios'
-import ex from './httpex'
-import codes from './httpresultcode'
+import axios from 'axios';
+import ex from './httpex';
+import codes from './httpresultcode';
+import wait from './delay';
 
 // 通用接口业务成功判定条件
-const DEF_VALIDATOR = res => res.ErrorCode === codes.SUCCESS
+const DEF_VALIDATOR = res => res.code === codes.SUCCESS;
 // 通用接口业务失败处理
-const DEF_FAIL_HANDLING = res => ex.ErrorMsg(res.ErrorCode, res.Message)
+const DEF_FAIL_HANDLING = res => ex.ErrorMsg(res.code, res.message);
 
-function requestUrl (url) {
-  return url
+function requestUrl(url) {
+  return url;
 }
 
-function send (url, method, body, options, load, loadMsg, validator, defFail, defEx) {
-  const opts = { ...options }
+function send(url, method, body, options, load, loadMsg, validator, defFail, defEx) {
+  const opts = { ...options };
   // 生成请求url
-  url = requestUrl(url)
+  url = requestUrl(url);
   if (load) {
     // 显示加载框
+    window.$globalHub.$loading.show();
   }
-  let token = ''
+  let userinfo = window.$globalHub.$utils.Store.get('userinfo');
+  let token = userinfo && userinfo.token ? userinfo.token : '';
   opts.headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     Authentication: token || '',
     ...opts.headers
-  }
+  };
   return axios({ method, url, data: body, ...opts })
     .then(async res => {
-      const obj = res.data
+      const obj = res.data;
 
+      // 避免loading动画一闪而过，增加0.3秒延迟
+      await wait(300);
       if (load) {
         // 隐藏加载框
+        window.$globalHub.$loading.hide();
       }
       // 验证接口结果
       if (validator(obj)) {
-        return obj
+        return obj;
       } else {
         if (defFail) {
           // 通用业务失败处理
-          DEF_FAIL_HANDLING(obj)
-          return null
+          DEF_FAIL_HANDLING(obj);
+          return null;
         } else {
           // 返回前台处理
-          return obj
+          return obj;
         }
       }
     })
     .catch(error => {
-      let errorMsg = ''
+      let errorMsg = '';
       try {
         if (error.response) {
-          errorMsg = JSON.stringify(error.response)
+          errorMsg = JSON.stringify(error.response);
         } else if (error.request) {
-          errorMsg = JSON.stringify(error.request)
+          errorMsg = JSON.stringify(error.request);
         } else {
-          errorMsg = JSON.stringify(error.message)
+          errorMsg = JSON.stringify(error.message);
         }
       } catch (e) {}
       if (load) {
         // 隐藏加载框
+        window.$globalHub.$loading.hide();
       }
       // 接口异常处理
       if (defEx) {
       } else {
         // 返回前台处理
-        return Promise.reject(new Error(errorMsg))
+        return Promise.reject(new Error(errorMsg));
       }
-    })
+    });
 }
 
 export default {
@@ -88,11 +95,11 @@ export default {
    * @param defFail 是否使用默认业务失败处理
    * @param defEx 是否使用默认接口失败处理
    */
-  get (
+  get(
     url,
     { options = null, load = true, loadMsg = '加载中...', validator = DEF_VALIDATOR, defFail = true, defEx = true } = {}
   ) {
-    return send(url, 'get', null, options, load, loadMsg, validator, defFail, defEx)
+    return send(url, 'get', null, options, load, loadMsg, validator, defFail, defEx);
   },
   /**
    * 调用Post接口
@@ -105,21 +112,21 @@ export default {
    * @param defFail 是否使用默认业务失败处理
    * @param defEx 是否使用默认接口失败处理
    */
-  post (
+  post(
     url,
     body,
     { options = null, load = true, loadMsg = '加载中...', validator = DEF_VALIDATOR, defFail = true, defEx = true } = {}
   ) {
-    return send(url, 'post', body, options, load, loadMsg, validator, defFail, defEx)
+    return send(url, 'post', body, options, load, loadMsg, validator, defFail, defEx);
   },
-  all (list) {
+  all(list) {
     return axios.all(list).then(
       axios.spread((...args) => {
-        return args
+        return args;
       })
-    )
+    );
   },
-  getRequestUrl (url) {
-    return requestUrl(url)
+  getRequestUrl(url) {
+    return requestUrl(url);
   }
-}
+};

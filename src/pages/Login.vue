@@ -20,8 +20,17 @@ export default {
   computed: {},
   created () { },
   beforeDestroy () { },
-  mounted () { },
-  methods: {}
+  mounted () {
+    this.$nextTick(() => {
+      this.init()
+    })
+  },
+  methods: {
+    init () {
+      // 清除登录状态
+      this.$utils.Store.clear('userinfo')
+    }
+  }
 }
 </script>
 

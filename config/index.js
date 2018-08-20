@@ -17,6 +17,13 @@ module.exports = {
           '^/demoApi': ''
         }
       },
+      '/mpApi': {
+        target: 'http://localhost:8888/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/mpApi': ''
+        }
+      },
       '/ueditor': {
         target: 'http://localhost:8888/ueditor/',
         changeOrigin: true,
