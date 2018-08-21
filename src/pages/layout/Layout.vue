@@ -23,36 +23,7 @@ export default {
       shortLogoName: '嘉乐',
       version: 'Beta1.0.3',
       collapsed: false,
-      menus: [
-        {
-          id: '/dashboard',
-          name: '首页',
-          icon: 'desktop'
-        },
-        {
-          id: '/sysmanage',
-          name: '系统管理',
-          icon: 'setting',
-          children: [
-            {
-              id: '/managelist',
-              name: '管理员管理'
-            },
-            {
-              id: '/rolelist',
-              name: '角色管理'
-            },
-            {
-              id: '/menulist',
-              name: '菜单管理'
-            },
-            {
-              id: '/logs',
-              name: '日志查看'
-            }
-          ]
-        }
-      ],
+      menus: [],
       crumbs: [],
       badgeNumber: 0,
       cardIsShow: false,
@@ -82,11 +53,14 @@ export default {
   methods: {
     init () {
       let userinfo = this.$utils.Store.get('userinfo')
+      let menuinfos = this.$utils.Store.get('menuinfos')
 
       if (userinfo === null || userinfo === undefined || userinfo === {}) {
         // 未登录状态下，进入登录页面
         this.$router.push({ path: '/login' })
       }
+      // 设置菜单
+      this.menus = menuinfos
     },
     logout () {
       // 清除登录状态

@@ -82,7 +82,7 @@ export default {
     },
     async getImage () {
       this.imgCodeToken = guid()
-      let result = await api.getImageCode({ token: this.imgCodeToken })
+      let result = await api.getImageCode({ token: this.imgCodeToken }, { load: false })
       this.imgCodeSrc = result.result.imgbase64
     },
     async login () {
@@ -122,6 +122,11 @@ export default {
         this.$utils.Store.set('userinfo', {
           ...result.result
         })
+
+        let resultMenu = await api.getManagerMenu({}, { load: false })
+        if (resultMenu) {
+          this.$utils.Store.set('menuinfos', resultMenu.result)
+        }
 
         // 路由跳转
         this.$router.push({ path: '/dashboard' })

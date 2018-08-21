@@ -4,28 +4,33 @@
     <a-modal :title="cuTitle" v-model="cuVisible" @ok="addOrupdateAction" :okText="cuConfirmText" cancelText="取消" :confirmLoading="cuConfirmLoading">
       <a-form>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='登录名'>
-          <a-input placeholder='请输入登录名' v-model="managerInfo.loginName" :readOnly="managerInfo.id>0"></a-input>
+          <a-input placeholder='请输入登录名' v-model="info.loginName" :readOnly="info.id>0"></a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='登录密码'>
-          <a-input placeholder='请输入登录密码' v-model="managerInfo.loginPwd" type="password">
+          <a-input placeholder='请输入登录密码' v-model="info.loginPwd" type="password">
           </a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='真实姓名'>
-          <a-input placeholder='请输入真实姓名' v-model="managerInfo.realName" :readOnly="managerInfo.id===1">
+          <a-input placeholder='请输入真实姓名' v-model="info.realName" :readOnly="info.id===1">
           </a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='手机号'>
-          <a-input placeholder='请输入手机号' v-model="managerInfo.phone">
+          <a-input placeholder='请输入手机号' v-model="info.phone">
           </a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='状态'>
-          <a-switch checkedChildren="开启" unCheckedChildren="关闭" v-model="managerInfo.stateSwitch" :disabled="managerInfo.id===1" />
+          <a-switch checkedChildren="开启" unCheckedChildren="关闭" v-model="info.stateSwitch" :disabled="info.id===1" />
         </a-form-item>
       </a-form>
     </a-modal>
     <a-modal title="搜索条件" v-model="searchVisible" @ok="searchAction" :okText="searchConfirmText" cancelText="取消" :confirmLoading="searchConfirmLoading">
       <a-form>
         <a-row>
+          <a-col :span="24" style="display:block;">
+            <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='添加时间'>
+              <a-range-picker @change="onSearchTimeChange" format="YYYY-MM-DD" :placeholder="['开始时间', '结束时间']" />
+            </a-form-item>
+          </a-col>
           <a-col :span="12" style="display:block;">
             <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='登录名'>
               <a-input placeholder='请输入登录名' v-model="search.loginName"></a-input>
@@ -52,6 +57,9 @@
           </a-col>
         </a-row>
       </a-form>
+    </a-modal>
+    <a-modal title="设置角色" v-model="setRoleVisible" @ok="setRoleAction" :okText="setRoleConfirmText" cancelText="取消" :confirmLoading="setRoleConfirmLoading">
+      <a-transfer :dataSource="roleData" :targetKeys="targetRoleData" :titles="['角色清单', '已选择角色']" :render="item=>item.title" @change="selectRoleChange"></a-transfer>
     </a-modal>
   </div>
 </template>
@@ -87,7 +95,12 @@ export default {
       searchVisible: false,
       searchConfirmText: '搜索',
       searchConfirmLoading: false,
-      managerInfo: {
+      roleData: [],
+      targetRoleData: [],
+      setRoleVisible: false,
+      setRoleConfirmText: '确认并保存',
+      setRoleConfirmLoading: false,
+      info: {
         id: 0,
         loginName: '',
         loginPwd: '',
@@ -100,7 +113,9 @@ export default {
         loginName: '',
         realName: '',
         phone: '',
-        state: -1
+        state: -1,
+        startAddTime: 0,
+        endAddTime: 0
       }
     }
   },
@@ -128,11 +143,11 @@ export default {
       this.columns = [{
         title: '编号',
         dataIndex: 'id',
-        width: 50
+        width: 30
       }, {
         title: '登录名',
         dataIndex: 'loginName',
-        width: 50
+        width: 60
       }, {
         title: '真实姓名',
         dataIndex: 'realName',
@@ -157,7 +172,7 @@ export default {
         title: '操作',
         dataIndex: 'action',
         scopedSlots: { customRender: 'action' },
-        width: 100
+        width: 150
       }]
       // 功能按钮
       this.buttons = [
@@ -167,11 +182,6 @@ export default {
           icon: 'search',
           text: '搜索',
           click: (e) => {
-            /* this.pagination.current = 1
-                                  this.fetch({
-                                    ...this.pagination,
-                                    ...this.search
-                                  }) */
             this.searchVisible = true
           }
         },
@@ -191,7 +201,7 @@ export default {
           icon: 'edit',
           text: '新增',
           click: () => {
-            this.managerInfo = {
+            this.info = {
               id: 0,
               loginName: '',
               loginPwd: '',
@@ -240,6 +250,28 @@ export default {
       this.actionButtons = [
         {
           model: 'button',
+          text: '设置角色',
+          icon: 'edit',
+          click: async (e) => {
+            if (e.id === 1) {
+              this.$message.error('超级管理员禁止更新！')
+              return
+            }
+            let result = await api.getManagerRole({
+              id: e.id
+            })
+            if (result) {
+              result = result.result
+              this.info.id = e.id
+              this.targetRoleData = result.map((val) => {
+                return `${val.id}`
+              })
+              this.setRoleVisible = true
+            }
+          }
+        },
+        {
+          model: 'button',
           text: '开启',
           style: {},
           icon: 'edit',
@@ -274,7 +306,11 @@ export default {
           style: {},
           icon: 'edit',
           click: (e) => {
-            this.managerInfo = {
+            if (e.id === 1) {
+              this.$message.error('超级管理员禁止更新！')
+              return
+            }
+            this.info = {
               id: e.id,
               loginName: e.loginName,
               loginPwd: '',
@@ -318,6 +354,22 @@ export default {
         ...this.pagination,
         ...this.search
       })
+      this.roleInit()
+    },
+    async roleInit () {
+      let result = await api.getRoles({
+        pageSize: 9999
+      })
+      if (result) {
+        result = result.result.list
+        result.forEach(role => {
+          this.roleData.push({
+            key: `${role.id}`,
+            title: role.roleName,
+            description: role.roleName
+          })
+        })
+      }
     },
     searchInit () {
       // 分页
@@ -330,7 +382,9 @@ export default {
         loginName: '',
         realName: '',
         phone: '',
-        state: -1
+        state: -1,
+        startAddTime: 0,
+        endAddTime: 0
       }
       this.fetch({
         ...this.pagination,
@@ -363,7 +417,7 @@ export default {
         this.pagination = {
           current: result.current,
           pageSize: result.pageSize,
-          totle: result.totle
+          total: result.total
         }
       }
     },
@@ -377,21 +431,21 @@ export default {
     async addOrupdateAction () {
       this.cuConfirmLoading = true
       this.cuConfirmText = '保存中...'
-      this.managerInfo.state = this.managerInfo.stateSwitch ? 1 : 0
+      this.info.state = this.info.stateSwitch ? 1 : 0
 
       let result
-      if (this.managerInfo.id > 0) {
+      if (this.info.id > 0) {
         result = await api.editManager({
-          ...this.managerInfo
+          ...this.info
         })
       } else {
         result = await api.addManager({
-          ...this.managerInfo
+          ...this.info
         })
       }
 
       if (result) {
-        this.managerInfo = {
+        this.info = {
           id: 0,
           loginName: '',
           loginPwd: '',
@@ -406,6 +460,20 @@ export default {
         this.searchInit()
       }
     },
+    async onSearchTimeChange (date, dateString) {
+      if (date.length === 0) {
+        this.search.startAddTime = 0
+        this.search.endAddTime = 0
+        return
+      }
+      this.search.startAddTime = date[0].format('x')
+      this.search.endAddTime = date[1].format('x')
+
+      this.search.startAddTime = parseInt(this.search.startAddTime / 1000)
+      this.search.endAddTime = parseInt(this.search.endAddTime / 1000)
+      this.search.startAddTime = (this.search.startAddTime - (this.search.startAddTime + 8 * 3600) % 86400) * 1000
+      this.search.endAddTime = (this.search.endAddTime - (this.search.endAddTime + 8 * 3600) % 86400 + 24 * 3600) * 1000 - 1
+    },
     async searchAction () {
       this.searchConfirmLoading = true
       this.searchConfirmText = '搜索中...'
@@ -419,6 +487,22 @@ export default {
         ...this.pagination,
         ...this.search
       })
+    },
+    selectRoleChange (nextTargetKeys, direction, moveKeys) {
+      this.targetRoleData = nextTargetKeys
+    },
+    async setRoleAction () {
+      if (this.targetRoleData.length === 0) {
+        this.$message.error('请选择角色！')
+        return
+      }
+      this.setRoleConfirmText = '保存中...'
+      this.setRoleConfirmLoading = true
+      let result = await api.setManagerRole({ id: this.info.id, roleIds: this.targetRoleData })
+      if (result) {
+        this.setRoleConfirmText = '确认并保存'
+        this.setRoleConfirmLoading = false
+      }
     }
   }
 }

@@ -21,11 +21,7 @@ export default {
   },
   methods: {
     init () {
-      this.$loading.show({ text: '加载中' })
 
-      setTimeout(() => {
-        this.$loading.hide()
-      }, 2000)
     }
   }
 }

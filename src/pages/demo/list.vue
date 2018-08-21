@@ -173,7 +173,7 @@ export default {
         this.pagination = {
           pageSize: param.pageSize,
           current: param.current,
-          total: result.Data.totle
+          total: result.Data.total
         }
       }
     },
