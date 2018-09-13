@@ -2,7 +2,7 @@
   <a-layout class="layout-main">
     <sidebar :menus="menus" :logoName="logoName" :shortLogoName="shortLogoName" :version="version" :collapsed.sync="collapsed" @on-init="menuInit" @on-logout="logout" @on-collapse="menuCollapse" @on-select="menuSelect"></sidebar>
     <a-layout :style="{ padding:'0 16px', height: '100%', overflow: 'hidden' }">
-      <app-header :crumbs="crumbs" :badgeNumber="badgeNumber" @on-clickhead="clickHead" @on-clicksetting="clickSetting"></app-header>
+      <app-header :crumbs="crumbs" :selectMenuKey.sync="selectMenuKey" :badgeNumber="badgeNumber" @on-clickbell="clickBell" @on-clickhead="clickHead" @on-clicksetpassword="setPassword" @on-clicklogout="logout"></app-header>
       <a-layout-content :style="{ height: mainHeight }">
         <app-main></app-main>
       </a-layout-content>
@@ -24,6 +24,7 @@ export default {
       version: 'Beta1.0.3',
       collapsed: false,
       menus: [],
+      selectMenuKey: '',
       crumbs: [],
       badgeNumber: 0,
       cardIsShow: false,
@@ -37,6 +38,11 @@ export default {
     AppFooter,
     AppCard
   },
+  watch: {
+    selectMenuKey (val) {
+      console.log('val:', val)
+    }
+  },
   computed: {
     mainHeight () {
       // header height:40
@@ -46,9 +52,7 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      this.init()
-    })
+    this.init()
   },
   methods: {
     init () {
@@ -112,12 +116,15 @@ export default {
         })
       }
     },
+    clickBell () {
+      this.$message.success('点击了消息中心！')
+    },
     clickHead () {
+      this.$message.success('点击了头像！')
+    },
+    setPassword () {
       this.crumbs = [{ name: '系统管理' }, { name: '修改密码' }]
       this.$router.push({ path: '/setpassword' })
-    },
-    clickSetting () {
-      this.$message.success('点击设置按钮!')
     }
   }
 }

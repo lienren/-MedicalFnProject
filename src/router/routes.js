@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-08-19 13:47:06
+ * @Last Modified time: 2018-09-08 10:48:52
  */
 'use strict'
 
@@ -72,6 +72,36 @@ export default [
         name: '修改个人密码',
         component: view('manage/SetPassword'),
         meta: { title: '修改个人密码' }
+      }
+    ]
+  },
+  {
+    path: '/bs',
+    component: resolve => require(['../pages/layout/Layout'], resolve),
+    children: [
+      {
+        path: '/webabout',
+        name: '关于我们',
+        component: view('website/About'),
+        meta: { title: '关于我们' }
+      },
+      {
+        path: '/deps',
+        name: '科室管理',
+        component: view('bs/deps'),
+        meta: { title: '科室管理' }
+      },
+      {
+        path: '/cls',
+        name: '诊所管理',
+        component: view('bs/cls'),
+        meta: { title: '诊所管理' }
+      },
+      {
+        path: '/doctor',
+        name: '医师管理',
+        component: view('bs/doctor'),
+        meta: { title: '医师管理' }
       }
     ]
   }

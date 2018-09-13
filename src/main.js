@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-13 22:29:12
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-08-19 10:24:06
+ * @Last Modified time: 2018-08-22 13:07:13
  */
 'use strict'
 
@@ -13,6 +13,7 @@ import UtilsPlugin from './assets/utils'
 import LoadingPlugin from './plugs/loading'
 import App from './App'
 import router from './router'
+import VCharts from 'v-charts'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import './styles/index.scss' // global css
@@ -22,6 +23,7 @@ Vue.config.productionTip = false
 
 Vue.use(Antd)
 Vue.use(UtilsPlugin)
+Vue.use(VCharts)
 Vue.use(LoadingPlugin)
 
 router.beforeEach((to, from, next) => {

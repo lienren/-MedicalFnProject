@@ -1,6 +1,6 @@
 <template>
   <div>
-    <iTable :btns="buttons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
+    <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
     <a-modal title="搜索条件" v-model="searchVisible" @ok="searchAction" :okText="searchConfirmText" cancelText="取消" :confirmLoading="searchConfirmLoading">
       <a-form>
         <a-row>
@@ -25,6 +25,16 @@
             </a-form-item>
           </a-col>
         </a-row>
+      </a-form>
+    </a-modal>
+    <a-modal title="详细信息" v-model="detailVisible" @ok="detailAction" :okText="detailConfirmText" cancelText="取消" :confirmLoading="detailConfirmLoading">
+      <a-form>
+        <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='请求数据'>
+          <a-textarea v-model="detailReqParam" :rows="4"/>
+        </a-form-item>
+        <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='返回数据'>
+          <a-textarea v-model="detailRepParam" :rows="10"/>
+        </a-form-item>
       </a-form>
     </a-modal>
   </div>
@@ -53,6 +63,7 @@ export default {
       data: [],
       pagination: {},
       buttons: [],
+      actionButtons: [],
       searchVisible: false,
       searchConfirmText: '搜索',
       searchConfirmLoading: false,
@@ -62,7 +73,12 @@ export default {
         activeName: '',
         startAddTime: 0,
         endAddTime: 0
-      }
+      },
+      detailVisible: false,
+      detailConfirmText: '关闭',
+      detailConfirmLoading: false,
+      detailReqParam: '',
+      detailRepParam: ''
     }
   },
   computed: {
@@ -114,6 +130,11 @@ export default {
         title: '添加时间',
         dataIndex: 'addTime',
         width: 100
+      }, {
+        title: '操作',
+        dataIndex: 'action',
+        scopedSlots: { customRender: 'action' },
+        width: 50
       }]
       // 功能按钮
       this.buttons = [
@@ -135,6 +156,21 @@ export default {
               ...this.pagination,
               ...this.search
             })
+          }
+        }
+      ]
+      // 操作按钮
+      this.actionButtons = [
+        {
+          model: 'button',
+          text: '详细',
+          style: {},
+          icon: '',
+          click: (e) => {
+            console.log('e:', e)
+            this.detailVisible = true
+            this.detailReqParam = JSON.stringify(JSON.parse(e.reqParam), null, 4)
+            this.detailRepParam = JSON.stringify(JSON.parse(e.repParam), null, 4)
           }
         }
       ]
@@ -182,6 +218,8 @@ export default {
             managerRealName: item.managerRealName,
             managerLoginName: item.managerLoginName,
             managerPhone: item.managerPhone,
+            reqParam: item.reqParam,
+            repParam: item.repParam,
             addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss')
           })
         })
@@ -226,6 +264,9 @@ export default {
         ...this.pagination,
         ...this.search
       })
+    },
+    detailAction () {
+      this.detailVisible = false
     }
   }
 }

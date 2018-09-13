@@ -3,7 +3,7 @@
     <div class="logo">{{collapsed?shortLogoName:logoName}}
       <span>{{version}}</span>
     </div>
-    <a-menu theme="dark" mode="inline" :defaultOpenKeys="defaultOpenKeys" :defaultSelectedKeys="defaultSelectedKeys" @select="select">
+    <a-menu theme="dark" mode="inline" :defaultOpenKeys="defaultOpenKeys" :defaultSelectedKeys="defaultSelectedKeys" v-model="selectMenuKeys" @select="select">
       <template v-for="menu in menus">
         <a-sub-menu v-if="menu.children&&menu.children.length>0" :key="menu.id">
           <span slot="title">
@@ -20,7 +20,7 @@
     </a-menu>
     <div class="trigger-list">
       <a-icon class="trigger menu-collapsed-switch" :title="menuSwitchText" :type="menuSwitchClassName" @click="collapse" />
-      <a-icon class="trigger logout-button" title="安全退出" type="logout" @click="logout" />
+      <!-- <a-icon class="trigger logout-button" title="安全退出" type="logout" @click="logout" /> -->
     </div>
   </a-layout-sider>
 </template>
@@ -47,15 +47,27 @@ export default {
     collapsed: {
       type: Boolean,
       default: false
+    },
+    selectMenuKey: {
+      type: String
     }
   },
   components: {},
   data () {
-    return {}
+    return {
+      selectMenuKeys: []
+    }
   },
   watch: {
     collapsed (val) {
       this.$emit('update:collapsed', val)
+    },
+    selectMenuKey (val) {
+      this.selectMenuKeys = [val]
+    },
+    selectMenuKeys (val) {
+      console.log('val:', val)
+      this.$emit('update:selectMenuKey', val[0])
     }
   },
   computed: {

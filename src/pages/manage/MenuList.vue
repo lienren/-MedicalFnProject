@@ -183,6 +183,8 @@ export default {
               id: 0,
               menuName: '',
               menuLink: '',
+              menuIcon: this.info.menuIcon,
+              parentId: this.info.parentId,
               sort: 0
             }
             this.cuVisible = true
@@ -301,13 +303,16 @@ export default {
           id: 0,
           menuName: '',
           menuLink: '',
+          menuIcon: this.info.menuIcon,
+          parentId: this.info.parentId,
           sort: 0
         }
         this.cuVisible = false
-        this.cuConfirmLoading = false
-        this.cuConfirmText = '确认并保存'
         this.searchInit()
       }
+
+      this.cuConfirmLoading = false
+      this.cuConfirmText = '确认并保存'
     },
     async onSearchTimeChange (date, dateString) {
       if (date.length === 0) {
