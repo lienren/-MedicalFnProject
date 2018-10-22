@@ -18,6 +18,13 @@
           <a-input placeholder='请输入手机号' v-model="info.phone">
           </a-input>
         </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='性别'>
+          <a-switch checkedChildren="男" unCheckedChildren="女" v-model="info.sexSwitch" />
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='部门名称'>
+          <a-input placeholder='请输入部门名称' v-model="info.depName">
+          </a-input>
+        </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='状态'>
           <a-switch checkedChildren="开启" unCheckedChildren="关闭" v-model="info.stateSwitch" :disabled="info.id===1" />
         </a-form-item>
@@ -107,7 +114,10 @@ export default {
         realName: '',
         phone: '',
         state: 1,
-        stateSwitch: true
+        sex: 1,
+        stateSwitch: true,
+        sexSwitch: true,
+        depName: ''
       },
       search: {
         loginName: '',
@@ -115,7 +125,8 @@ export default {
         phone: '',
         state: -1,
         startAddTime: 0,
-        endAddTime: 0
+        endAddTime: 0,
+        depName: ''
       }
     }
   },
@@ -151,19 +162,23 @@ export default {
       }, {
         title: '真实姓名',
         dataIndex: 'realName',
-        width: 100
+        width: 80
+      }, {
+        title: '部门名称',
+        dataIndex: 'depName',
+        width: 80
       }, {
         title: '手机号',
         dataIndex: 'phone',
-        width: 100
+        width: 80
+      }, {
+        title: '性别',
+        dataIndex: 'sexName',
+        width: 30
       }, {
         title: '状态',
         dataIndex: 'stateName',
-        width: 50
-      }, {
-        title: '添加时间',
-        dataIndex: 'addTime',
-        width: 100
+        width: 30
       }, {
         title: '最后修改时间',
         dataIndex: 'lastTime',
@@ -208,7 +223,10 @@ export default {
               realName: '',
               phone: '',
               state: 1,
-              stateSwitch: true
+              sex: 1,
+              stateSwitch: true,
+              sexSwitch: true,
+              depName: ''
             }
             this.cuVisible = true
             this.cuTitle = '新增管理员'
@@ -317,7 +335,10 @@ export default {
               realName: e.realName,
               phone: e.phone,
               state: e.state,
-              stateSwitch: e.state === 1
+              sex: e.sex,
+              stateSwitch: e.state === 1,
+              sexSwitch: e.sex === 1,
+              depName: e.depName
             }
             this.cuVisible = true
             this.cuTitle = '修改管理员'
@@ -384,7 +405,8 @@ export default {
         phone: '',
         state: -1,
         startAddTime: 0,
-        endAddTime: 0
+        endAddTime: 0,
+        depName: ''
       }
       this.fetch({
         ...this.pagination,
@@ -409,6 +431,9 @@ export default {
             realName: item.realName,
             state: item.state,
             stateName: (item.state === 1 ? '开启' : '关闭'),
+            sex: item.sex,
+            sexName: (item.sex === 1 ? '男' : '女'),
+            depName: item.depName,
             phone: item.phone,
             addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss'),
             lastTime: this.$utils.Date.format(item.lastTime, 'yyyy-MM-dd hh:mm:ss')
@@ -432,6 +457,7 @@ export default {
       this.cuConfirmLoading = true
       this.cuConfirmText = '保存中...'
       this.info.state = this.info.stateSwitch ? 1 : 0
+      this.info.sex = this.info.sexSwitch ? 1 : 0
 
       let result
       if (this.info.id > 0) {
@@ -452,7 +478,10 @@ export default {
           realName: '',
           phone: '',
           state: 1,
-          stateSwitch: true
+          sex: 1,
+          stateSwitch: true,
+          sexSwitch: true,
+          depName: ''
         }
         this.cuVisible = false
         this.searchInit()
