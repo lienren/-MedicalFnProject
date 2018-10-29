@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer class="layout-footer">
-    <div>Copyright © 2018-2020 Lejia All Rights Reserved / Presented By Li.R&D Team 2018-2020.</div>
+    <div>Presented By Li.R&D Team 2018-2020.</div>
   </a-layout-footer>
 </template>
 

@@ -294,6 +294,8 @@ export default {
       this.cuConfirmLoading = true
       this.cuConfirmText = '保存中...'
 
+      console.log('this.info:', this.info)
+
       let result = await api.addMenu({
         ...this.info
       })

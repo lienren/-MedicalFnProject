@@ -5,9 +5,9 @@
     </a-breadcrumb>
     <a-layout class="layout-header-right">
       <a-icon title="修改密码" type="key" class="layout-setpassword" @click="clickSetPassword" />
-      <a-badge dot :count="badgeNumber" class="layout-notification">
+      <!-- <a-badge dot :count="badgeNumber" class="layout-notification">
         <a-icon title="消息中心" type="bell" @click="clickBell" />
-      </a-badge>
+      </a-badge> -->
       <a-icon title="安全退出" type="logout" class="layout-logout" @click="clickLogout" />
       <div title="基本信息" class="layout-headimg" @click="clickHeaderImg">
         <a-avatar class="layout-headimg-avatar" icon="user" size="small"></a-avatar>
@@ -76,7 +76,7 @@ export default {
       font-size: 18px;
       line-height: 18px;
       position: absolute;
-      right: 105px;
+      right: 72px;
       top: 50%;
       margin-top: -9px;
       color: #666;

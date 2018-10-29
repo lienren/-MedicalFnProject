@@ -19,8 +19,8 @@ export default {
   name: 'layout',
   data () {
     return {
-      logoName: '嘉乐信息管理平台',
-      shortLogoName: '嘉乐',
+      logoName: '小额贷款管理平台',
+      shortLogoName: '平台',
       version: 'Beta1.0.3',
       collapsed: false,
       menus: [],
@@ -40,7 +40,7 @@ export default {
   },
   watch: {
     selectMenuKey (val) {
-      console.log('val:', val)
+      // console.log('val:', val)
     }
   },
   computed: {
@@ -67,10 +67,22 @@ export default {
       this.menus = menuinfos
     },
     logout () {
-      // 清除登录状态
-      this.$utils.Store.clear('userinfo')
-      // 路由跳转
-      this.$router.push({ path: '/login' })
+      let $this = this
+      this.$confirm({
+        title: '提示',
+        content: '您正在关闭系统，确认是否正常退出？',
+        okText: '正常退出',
+        cancelText: '取消',
+        onOk () {
+          // 清除登录状态
+          $this.$utils.Store.clear('userinfo')
+          // 路由跳转
+          $this.$router.push({ path: '/login' })
+        },
+        onCancel () {
+          console.log('cancel!')
+        }
+      })
     },
     menuInit (data) {
       // 设置面包屑名称
@@ -120,7 +132,7 @@ export default {
       this.$message.success('点击了消息中心！')
     },
     clickHead () {
-      this.$message.success('点击了头像！')
+      // this.$message.success('点击了头像！')
     },
     setPassword () {
       this.crumbs = [{ name: '系统管理' }, { name: '修改密码' }]

@@ -25,6 +25,7 @@ export default {
       let _this = this
 
       let step = parseInt((_this.value * 10) / (_this.time * 1000))
+      step = step > 0 ? step : this.value
       let current = 0
       let start = 0
       let t = setInterval(function () {

@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-13 22:29:12
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-08-22 13:07:13
+ * @Last Modified time: 2018-10-22 22:12:39
  */
 'use strict'
 
@@ -18,6 +18,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import './styles/index.scss' // global css
 import './styles/animate.css' // animate css
+import VueParticles from 'vue-particles' // 粒子酷炫效果
 
 Vue.config.productionTip = false
 
@@ -25,6 +26,7 @@ Vue.use(Antd)
 Vue.use(UtilsPlugin)
 Vue.use(VCharts)
 Vue.use(LoadingPlugin)
+Vue.use(VueParticles)
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar

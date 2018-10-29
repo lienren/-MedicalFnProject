@@ -17,11 +17,25 @@ module.exports = {
           '^/demoApi': ''
         }
       },
-      '/mpApi': {
-        target: 'http://localhost:8888/',
+      '/credit': {
+        target: 'http://inspiring-all.com:20000/credit',
         changeOrigin: true,
         pathRewrite: {
-          '^/mpApi': ''
+          '^/credit': ''
+        }
+      },
+      '/super': {
+        target: 'http://inspiring-all.com:20000/super',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/super': ''
+        }
+      },
+      '/base': {
+        target: 'http://inspiring-all.com:20000/base',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/base': ''
         }
       },
       '/ueditor': {
