@@ -5,7 +5,10 @@
       <div>{{todayCalendar}} 农历{{lunarCalendar}}</div>
       <div v-if="isShowQuickButton">
         <br/> 快捷功能：
-        <a-button icon="warning" size="small" type="primary" @click="goToOrderList">即将到期</a-button>
+        <a-button icon="warning" size="small" type="primary" @click="goToOrderList(1)">今日到期</a-button>
+        <a-button icon="warning" size="small" type="primary" @click="goToOrderList(2)">明日到期</a-button>
+        <a-button icon="warning" size="small" type="primary" @click="goToOrderList(3)">即将到期</a-button>
+        <a-button icon="warning" size="small" type="primary" @click="goToOrderList(4)">已经逾期</a-button>
       </div>
     </div>
     <div v-if="isShowDataBox" style="background-color: #ececec; padding: 20px; margin-bottom: 20px;">
@@ -154,6 +157,15 @@ export default {
         title: '贷款金额',
         dataIndex: 'lastloanPrice'
       }, {
+        title: '贷款利息',
+        dataIndex: 'lastloanInterest'
+      }, {
+        title: '贷款本金',
+        dataIndex: 'lastloanServicePrice'
+      }, {
+        title: '逾期本金',
+        dataIndex: 'yqbj'
+      }, {
         title: '贷款数量',
         dataIndex: 'loanCount'
       }, {
@@ -178,14 +190,16 @@ export default {
             return yq.managerId === this.data[i].managerId
           })
           if (findYQ && findYQ.length > 0) {
+            this.data[i].yqbj = findYQ[0].lastloanServicePrice / 100
             this.data[i].yql = parseFloat((findYQ[0].loanCount / this.data[i].loanCount) * 100).toFixed(2) + '%'
           } else {
+            this.data[i].yqbj = 0
             this.data[i].yql = '0%'
           }
         }
       }
     },
-    goToOrderList () {
+    goToOrderList (type) {
       let userinfo = this.$utils.Store.get('userinfo')
       let superRole = userinfo.roles.filter(role => {
         return role.roleId === 1
@@ -195,10 +209,69 @@ export default {
         return role.roleId === 3
       })
 
+      let today = this.$utils.Date.getTodayTimeStamp()
       if (superRole && superRole.length > 0) {
-        this.$router.push({ path: '/allorderlist' })
+        let query = {}
+        switch (type) {
+          case 1:
+            query = {
+              state: ['1', '2', '4', '5'],
+              returnSTime: today.starttime,
+              returnETime: today.endtime
+            }
+            break
+          case 2:
+            query = {
+              state: ['1', '2', '4', '5'],
+              returnSTime: today.starttime - 86400,
+              returnETime: today.endtime - 86400
+            }
+            break
+          case 3:
+            query = {
+              state: ['1', '2', '4', '5'],
+              returnSTime: today.starttime - 172800,
+              returnETime: today.endtime - 172800
+            }
+            break
+          case 4:
+            query = {
+              state: ['4']
+            }
+            break
+        }
+        this.$router.push({ path: '/allorderlist', query: query })
       } else if (verfiyRole && verfiyRole.length > 0) {
-        this.$router.push({ path: '/orderlist' })
+        let query = {}
+        switch (type) {
+          case 1:
+            query = {
+              state: ['1', '2', '4', '5'],
+              returnSTime: today.starttime,
+              returnETime: today.endtime
+            }
+            break
+          case 2:
+            query = {
+              state: ['1', '2', '4', '5'],
+              returnSTime: today.starttime - 86400,
+              returnETime: today.endtime - 86400
+            }
+            break
+          case 3:
+            query = {
+              state: ['1', '2', '4', '5'],
+              returnSTime: today.starttime - 172800,
+              returnETime: today.endtime - 172800
+            }
+            break
+          case 4:
+            query = {
+              state: ['4']
+            }
+            break
+        }
+        this.$router.push({ path: '/orderlist', query: query })
       }
     }
   }

@@ -66,7 +66,6 @@ export default {
       this.selectMenuKeys = [val]
     },
     selectMenuKeys (val) {
-      console.log('val:', val)
       this.$emit('update:selectMenuKey', val[0])
     }
   },

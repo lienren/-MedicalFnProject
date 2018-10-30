@@ -35,8 +35,8 @@
         <a-input placeholder='请输入贷款利息' style="width:30%;" v-model="loanInterest" />
       </a-form-item>
 
-      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='到手金额'>
-        <a-input placeholder='请输入到手金额' style="width:30%;" v-model="loanServicePrice" />
+      <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='本金'>
+        <a-input placeholder='请输入本金' style="width:30%;" v-model="loanServicePrice" />
       </a-form-item>
 
       <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='借款日期'>

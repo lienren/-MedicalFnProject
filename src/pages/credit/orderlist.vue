@@ -15,7 +15,7 @@
         <a-form-item v-if="orderDetail.userSource==='中介'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='中介联系电话'>{{orderDetail.userSourcePhone}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='贷款金额'>{{orderDetail.loanPrice}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='贷款利息'>{{orderDetail.loanInterest}}</a-form-item>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='到手金额'>{{orderDetail.loanServicePrice}}</a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='贷款本金'>{{orderDetail.loanServicePrice}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='贷款时间'>{{orderDetail.loanTime}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='还款时间'>{{orderDetail.shouldReturnTime}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='审核员'>{{orderDetail.managerName}}</a-form-item>
@@ -23,7 +23,7 @@
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='订单状态'>{{orderDetail.stateName}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终贷款金额'>{{orderDetail.lastloanPrice}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终贷款利息'>{{orderDetail.lastloanInterest}}</a-form-item>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终到手金额'>{{orderDetail.lastloanServicePrice}}</a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终贷款本金'>{{orderDetail.lastloanServicePrice}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期总次数'>{{orderDetail.extCount}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期总金额'>{{orderDetail.extPrice}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终还款时间'>{{orderDetail.extReturnTime}}</a-form-item>
@@ -39,7 +39,6 @@
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='订单状态'>
           <a-select labelInValue :defaultValue="selOrderState" style="width: 120px" @change="handleOrderStateChange">
             <a-select-option value="3">已还款</a-select-option>
-            <a-select-option value="4">已逾期</a-select-option>
             <a-select-option value="5">需催收</a-select-option>
             <a-select-option value="2">展期</a-select-option>
           </a-select>
@@ -59,13 +58,64 @@
           <a-input placeholder='请输入贷款利息' v-model="lastloanInterest" />
         </a-form-item>
 
-        <a-form-item v-if="selOrderState.key==='2'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终到手金额'>
-          <a-input placeholder='请输入到手金额' v-model="lastloanServicePrice" />
+        <a-form-item v-if="selOrderState.key==='2'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终本金'>
+          <a-input placeholder='请输入本金' v-model="lastloanServicePrice" />
         </a-form-item>
 
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='订单备注'>
           <a-input placeholder='请输入订单备注' v-model="remark" />
         </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal title="搜索条件" v-model="searchVisible" @ok="searchAction" :okText="searchConfirmText" cancelText="取消" :confirmLoading="searchConfirmLoading">
+      <a-form>
+        <a-row>
+          <a-col :span="24" style="display:block;">
+            <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='添加时间'>
+              <a-range-picker @change="onSearchTimeChange" format="YYYY-MM-DD" :placeholder="['开始时间', '结束时间']" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="24" style="display:block;">
+            <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='到期时间'>
+              <a-range-picker @change="onSearchOverTimeChange" format="YYYY-MM-DD" :placeholder="['开始时间', '结束时间']" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='订单号'>
+              <a-input placeholder='请输入订单号' v-model="search.orderSn"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='客户姓名'>
+              <a-input placeholder='请输入客户姓名' v-model="search.userName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='客户手机号'>
+              <a-input placeholder='请输入客户手机号' v-model="search.userPhone"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12" style="display:block;">
+            <a-form-item :labelCol="{span: 10}" :wrapperCol="{span: 14}" label='客户身份证号'>
+              <a-input placeholder='请输入客户身份证号' v-model="search.userIdCard"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24" style="display:block;">
+            <a-form-item :labelCol="{span: 5}" :wrapperCol="{span: 19}" label='订单状态'>
+              <a-select
+                mode="multiple"
+                placeholder="请选择订单状态"
+                :defaultValue="search.state"
+                @change="handleSelectOrderStateChange">
+                <a-select-option value="1">待还款</a-select-option>
+                <a-select-option value="2">展期</a-select-option>
+                <a-select-option value="3">已还款</a-select-option>
+                <a-select-option value="4">已逾期</a-select-option>
+                <a-select-option value="5">需催收</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-modal>
   </div>
@@ -105,7 +155,21 @@ export default {
       lastloanPrice: '',
       lastloanInterest: '',
       lastloanServicePrice: '',
-      remark: ''
+      remark: '',
+      searchVisible: false,
+      searchConfirmText: '搜索',
+      searchConfirmLoading: false,
+      search: {
+        stime: 0,
+        etime: 0,
+        orderSn: '',
+        userName: '',
+        userPhone: '',
+        userIdCard: '',
+        returnSTime: 0,
+        returnETime: 0,
+        state: ['1', '2', '4', '5']
+      }
     }
   },
   computed: {
@@ -113,7 +177,12 @@ export default {
       return this.$utils.Common.getWidthHeight().height - 188
     }
   },
-  created () { },
+  created () {
+    this.search = {
+      ...this.search,
+      ...this.$route.query
+    }
+  },
   beforeDestroy () { },
   mounted () {
     this.$nextTick(() => {
@@ -150,7 +219,7 @@ export default {
         dataIndex: 'lastloanInterest',
         width: 80
       }, {
-        title: '到手金额',
+        title: '本金',
         dataIndex: 'lastloanServicePrice',
         width: 80
       }, {
@@ -171,11 +240,21 @@ export default {
       this.buttons = [
         {
           model: 'button',
+          type: 'primary',
+          icon: 'search',
+          text: '搜索',
+          click: (e) => {
+            this.searchVisible = true
+          }
+        },
+        {
+          model: 'button',
           icon: 'reload',
           text: '刷新',
           click: () => {
             this.fetch({
-              ...this.pagination
+              ...this.pagination,
+              ...this.search
             })
           }
         }
@@ -208,7 +287,8 @@ export default {
         }
       }]
       this.fetch({
-        ...this.pagination
+        ...this.pagination,
+        ...this.search
       })
     },
     searchInit () {
@@ -218,17 +298,31 @@ export default {
         current: 1,
         total: 0
       }
+      this.search = {
+        stime: 0,
+        etime: 0,
+        orderSn: '',
+        userName: '',
+        userPhone: '',
+        userIdCard: '',
+        returnSTime: 0,
+        returnETime: 0,
+        state: []
+      }
       this.fetch({
-        ...this.pagination
+        ...this.pagination,
+        ...this.search
       })
     },
     async fetch (param = {}) {
       let userinfo = this.$utils.Store.get('userinfo')
       let result = await api.getLoanorder({
         ...param,
-        managerId: userinfo.id,
-        state: [1, 2, 4, 5]
+        managerId: userinfo.id
       })
+      this.searchVisible = false
+      this.searchConfirmText = '搜索'
+      this.searchConfirmLoading = false
       this.data = []
       if (result) {
         result = result.result
@@ -264,7 +358,8 @@ export default {
     handleTableChange (val) {
       this.pagination = val.pagination
       this.fetch({
-        ...this.pagination
+        ...this.pagination,
+        ...this.search
       })
     },
     closeOrderDetailDialog () {
@@ -293,7 +388,7 @@ export default {
           return
         }
         if (!this.lastloanServicePrice) {
-          this.$message.error('请输入最终到手金额!')
+          this.$message.error('请输入最终本金!')
           return
         }
       }
@@ -319,9 +414,55 @@ export default {
 
         this.$message.success('订单处理成功!')
         this.fetch({
-          ...this.pagination
+          ...this.pagination,
+          ...this.search
         })
       }
+    },
+    onSearchTimeChange (date, dateString) {
+      if (date.length === 0) {
+        this.search.stime = 0
+        this.search.etime = 0
+        return
+      }
+      this.search.stime = date[0].format('x')
+      this.search.etime = date[1].format('x')
+
+      this.search.stime = parseInt(this.search.stime / 1000)
+      this.search.etime = parseInt(this.search.etime / 1000)
+      this.search.stime = (this.search.stime - (this.search.stime + 8 * 3600) % 86400) * 1000
+      this.search.etime = (this.search.etime - (this.search.etime + 8 * 3600) % 86400 + 24 * 3600) * 1000 - 1
+    },
+    onSearchOverTimeChange (date, dateString) {
+      if (date.length === 0) {
+        this.search.returnSTime = 0
+        this.search.returnETime = 0
+        return
+      }
+      this.search.returnSTime = date[0].format('x')
+      this.search.returnETime = date[1].format('x')
+
+      this.search.returnSTime = parseInt(this.search.returnSTime / 1000)
+      this.search.returnETime = parseInt(this.search.returnETime / 1000)
+      this.search.returnSTime = (this.search.returnSTime - (this.search.returnSTime + 8 * 3600) % 86400) * 1000
+      this.search.returnETime = (this.search.returnETime - (this.search.returnETime + 8 * 3600) % 86400 + 24 * 3600) * 1000 - 1
+    },
+    handleSelectOrderStateChange (value) {
+      this.search.state = value
+    },
+    async searchAction () {
+      this.searchConfirmLoading = true
+      this.searchConfirmText = '搜索中...'
+      // 分页
+      this.pagination = {
+        pageSize: 20,
+        current: 1,
+        total: 0
+      }
+      this.fetch({
+        ...this.pagination,
+        ...this.search
+      })
     }
   }
 }

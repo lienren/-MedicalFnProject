@@ -318,5 +318,12 @@ export default {
     var myddy = mydate.getDay(); //获取存储当前日期
     var weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     return weekday[myddy];
+  },
+  // 获取今天开始和结束时间戳
+  getTodayTimeStamp() {
+    return {
+      starttime: new Date(new Date().setHours(0, 0, 0, 0)).getTime(),
+      endtime: new Date(new Date().setHours(23, 59, 59, 999)).getTime()
+    };
   }
 };
