@@ -143,10 +143,8 @@ export default {
       })
     },
     async fetch (param = {}) {
-      let userinfo = this.$utils.Store.get('userinfo')
       let result = await api.getLoanuser({
         ...param,
-        managerId: userinfo.id,
         isVerfiy: -1
       })
       this.data = []
