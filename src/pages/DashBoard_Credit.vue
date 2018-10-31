@@ -181,6 +181,8 @@ export default {
             ...item,
             sort: (index + 1),
             lastloanPrice: item.lastloanPrice / 100,
+            lastloanInterest: item.lastloanInterest / 100,
+            lastloanServicePrice: item.lastloanServicePrice / 100,
             sexName: item.sex === 1 ? '男' : '女'
           })
         })
