@@ -14,23 +14,23 @@
     <div v-if="isShowDataBox" style="background-color: #ececec; padding: 20px; margin-bottom: 20px;">
       <a-row :gutter="16">
         <a-col :span="6">
-          <a-card hoverable title="贷款总金额" :bordered="false" class="sts-card sts-card-1">
+          <a-card hoverable title="今日需还款总金额" :bordered="false" class="sts-card sts-card-1">
             <iNumberGrow :value="lastloanPrice" style="letter-spacing:2px;"></iNumberGrow>
           </a-card>
         </a-col>
         <a-col :span="6">
-          <a-card hoverable title="还款总金额" :bordered="false" class="sts-card sts-card-2">
+          <a-card hoverable title="今日已还款总金额" :bordered="false" class="sts-card sts-card-2">
             <iNumberGrow :value="realReturnPrice" style="letter-spacing:2px;"></iNumberGrow>
           </a-card>
         </a-col>
         <a-col :span="6">
-          <a-card hoverable title="贷款笔数" :bordered="false" class="sts-card sts-card-3">
-            <iNumberGrow :value="loanCount" style="letter-spacing:2px;"></iNumberGrow>
+          <a-card hoverable title="累计逾期金额" :bordered="false" class="sts-card sts-card-3">
+            <iNumberGrow :value="lastloanPrice1" style="letter-spacing:2px;"></iNumberGrow>
           </a-card>
         </a-col>
         <a-col :span="6">
-          <a-card hoverable title="还款笔数" :bordered="false" class="sts-card sts-card-4">
-            <iNumberGrow :value="returnCount" style="letter-spacing:2px;"></iNumberGrow>
+          <a-card hoverable title="累计利息收入" :bordered="false" class="sts-card sts-card-4">
+            <iNumberGrow :value="lastloanInterest" style="letter-spacing:2px;"></iNumberGrow>
           </a-card>
         </a-col>
       </a-row>
@@ -43,9 +43,15 @@
       </a-card>
     </div>
     <div style="margin-bottom: 20px;">
-      <a-card style="height:300px;">
+      <a-card>
+        <div slot="title">总业绩</div>
+        <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columnsall" :data="dataall"></iTable>
+      </a-card>
+    </div>
+    <div style="margin-bottom: 20px;">
+      <a-card>
         <div slot="title">排行榜</div>
-        <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data"></iTable>
+        <iTable :btns="buttons" :actionBtns="actionButtonsSort" :columns="columns" :data="data"></iTable>
       </a-card>
     </div>
   </div>
@@ -67,14 +73,17 @@ export default {
       chartVisible: false,
       isShowDataBox: false,
       lastloanPrice: 0,
-      loanCount: 0,
+      lastloanPrice1: 0,
       realReturnPrice: 0,
-      returnCount: 0,
+      lastloanInterest: 0,
       isShowQuickButton: false,
       columns: [],
+      columnsall: [],
       data: [],
+      dataall: [],
       buttons: [],
       actionButtons: [],
+      actionButtonsSort: [],
       pagination: {}
     }
   },
@@ -110,7 +119,7 @@ export default {
 
       let userinfo = this.$utils.Store.get('userinfo')
       let superRole = userinfo.roles.filter(role => {
-        return role.roleId === 1
+        return role.roleId === 1 || role.roleId === 2
       })
       let verfiyRole = userinfo.roles.filter(role => {
         return role.roleId === 3
@@ -131,8 +140,8 @@ export default {
       if (result) {
         this.lastloanPrice = result.result.lastloanPrice ? parseInt(result.result.lastloanPrice) : 0
         this.realReturnPrice = result.result.realReturnPrice ? parseInt(result.result.realReturnPrice) : 0
-        this.loanCount = parseInt(result.result.loanCount)
-        this.returnCount = parseInt(result.result.returnCount)
+        this.lastloanPrice1 = result.result.lastloanPrice1 ? parseInt(result.result.lastloanPrice1) : 0
+        this.lastloanInterest = result.result.lastloanInterest ? parseInt(result.result.lastloanInterest) : 0
         this.chartData.rows = result.result.month
         this.isShowDataBox = true
         this.chartVisible = true
@@ -140,6 +149,26 @@ export default {
       }
     },
     async getStsOrderSort () {
+      // 列头
+      this.columnsall = [{
+        title: '贷款金额',
+        dataIndex: 'lastloanPrice'
+      }, {
+        title: '贷款利息',
+        dataIndex: 'lastloanInterest'
+      }, {
+        title: '贷款本金',
+        dataIndex: 'lastloanServicePrice'
+      }, {
+        title: '逾期本金',
+        dataIndex: 'yqbj'
+      }, {
+        title: '贷款数量',
+        dataIndex: 'loanCount'
+      }, {
+        title: '逾期比例',
+        dataIndex: 'yql'
+      }]
       // 列头
       this.columns = [{
         title: '排名',
@@ -172,9 +201,41 @@ export default {
         title: '逾期比例',
         dataIndex: 'yql'
       }]
+      let userinfo = this.$utils.Store.get('userinfo')
+      let superRole = userinfo.roles.filter(role => {
+        return role.roleId === 1 || role.roleId === 2
+      })
+      if (superRole && superRole.length > 0) {
+        this.columns.push(
+          {
+            title: '操作',
+            dataIndex: 'action',
+            scopedSlots: { customRender: 'action' },
+            width: 150
+          }
+        )
+      }
+      this.actionButtonsSort = [{
+        model: 'button',
+        text: '订单详细',
+        style: {},
+        icon: '',
+        click: async (e) => {
+          this.$router.push({ path: '/allorderlist', query: {managerId: e.managerId} })
+        }
+      }]
       let result = await api.getStsOrderSort({})
       if (result && result.result) {
         this.data = []
+        this.dataall = [{
+          lastloanPrice: 0,
+          lastloanInterest: 0,
+          lastloanServicePrice: 0,
+          yqbj: 0,
+          loanCount: 0,
+          yqlCount: 0,
+          yql: '0%'
+        }]
         result = result.result
         result.a.forEach((item, index) => {
           this.data.push({
@@ -185,6 +246,10 @@ export default {
             lastloanServicePrice: item.lastloanServicePrice / 100,
             sexName: item.sex === 1 ? '男' : '女'
           })
+          this.dataall[0].lastloanPrice += item.lastloanPrice / 100
+          this.dataall[0].lastloanInterest += item.lastloanInterest / 100
+          this.dataall[0].lastloanServicePrice += item.lastloanServicePrice / 100
+          this.dataall[0].loanCount += item.loanCount
         })
 
         for (let i = 0, j = this.data.length; i < j; i++) {
@@ -199,6 +264,12 @@ export default {
             this.data[i].yql = '0%'
           }
         }
+
+        result.b.forEach((item, index) => {
+          this.dataall[0].yqbj += item.lastloanServicePrice / 100
+          this.dataall[0].yqlCount += item.loanCount
+          this.dataall[0].yql = parseFloat((this.dataall[0].yqlCount / this.dataall[0].loanCount) * 100).toFixed(2) + '%'
+        })
       }
     },
     goToOrderList (type) {
@@ -225,15 +296,15 @@ export default {
           case 2:
             query = {
               state: ['1', '2', '4', '5'],
-              returnSTime: today.starttime - 86400,
-              returnETime: today.endtime - 86400
+              returnSTime: today.starttime + 86400000,
+              returnETime: today.endtime + 86400000
             }
             break
           case 3:
             query = {
               state: ['1', '2', '4', '5'],
-              returnSTime: today.starttime - 172800,
-              returnETime: today.endtime - 172800
+              returnSTime: today.starttime + 172800000,
+              returnETime: today.endtime + 172800000
             }
             break
           case 4:
@@ -256,15 +327,15 @@ export default {
           case 2:
             query = {
               state: ['1', '2', '4', '5'],
-              returnSTime: today.starttime - 86400,
-              returnETime: today.endtime - 86400
+              returnSTime: today.starttime + 86400000,
+              returnETime: today.endtime + 86400000
             }
             break
           case 3:
             query = {
               state: ['1', '2', '4', '5'],
-              returnSTime: today.starttime - 172800,
-              returnETime: today.endtime - 172800
+              returnSTime: today.starttime + 172800000,
+              returnETime: today.endtime + 172800000
             }
             break
           case 4:

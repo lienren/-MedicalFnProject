@@ -104,9 +104,9 @@ export default {
         dataIndex: 'userIdCard',
         width: 150
       }, {
-        title: '审核状态',
-        dataIndex: 'verfiyStateName',
-        width: 80
+        title: '贷款数',
+        dataIndex: 'loanCount',
+        width: 150
       }, {
         title: '添加时间',
         dataIndex: 'addTime',
@@ -201,7 +201,8 @@ export default {
             userIdCard: item.userIdCard,
             isVerfiy: item.isVerfiy,
             verfiyStateName: item.isVerfiy === 1 ? '审核通过' : (item.isVerfiy === 0 ? '审核中' : '审核不通过'),
-            addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss')
+            addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss'),
+            loanCount: item.loanCount
           })
         })
         this.pagination = {

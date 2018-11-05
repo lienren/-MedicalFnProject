@@ -24,8 +24,8 @@
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终贷款金额'>{{orderDetail.lastloanPrice}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终贷款利息'>{{orderDetail.lastloanInterest}}</a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终贷款本金'>{{orderDetail.lastloanServicePrice}}</a-form-item>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期总次数'>{{orderDetail.extCount}}</a-form-item>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期总金额'>{{orderDetail.extPrice}}</a-form-item>
+        <!--<a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期总次数'>{{orderDetail.extCount}}</a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期总金额'>{{orderDetail.extPrice}}</a-form-item>-->
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终还款时间'>{{orderDetail.extReturnTime}}</a-form-item>
         <a-form-item v-if="orderDetail.state===3" :labelCol="labelCol" :wrapperCol="wrapperCol" label='实际还款金额'>{{orderDetail.realReturnPrice}}</a-form-item>
         <a-form-item v-if="orderDetail.state===3" :labelCol="labelCol" :wrapperCol="wrapperCol" label='实际还款时间'>{{orderDetail.realReturnTime}}</a-form-item>
@@ -43,9 +43,13 @@
             <a-select-option value="2">展期</a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item v-if="selOrderState.key==='2'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期金额'>
+        <!--<a-form-item v-if="selOrderState.key==='2'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='展期金额'>
           <a-input placeholder='请输入展期金额' v-model="extPrice" />
+        </a-form-item>-->
+        <a-form-item v-if="selOrderState.key==='2'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='借款时间'>
+          <a-date-picker v-model="extLoanTime" placeholder="请选择借款日期" />
         </a-form-item>
+
         <a-form-item v-if="selOrderState.key==='2'" :labelCol="labelCol" :wrapperCol="wrapperCol" label='最终还款时间'>
           <a-date-picker v-model="extReturnTime" placeholder="请选择还款日期" />
         </a-form-item>
@@ -142,7 +146,6 @@ export default {
       },
       columns: [],
       data: [],
-      dataDeps: [],
       pagination: {},
       buttons: [],
       actionButtons: [],
@@ -151,6 +154,7 @@ export default {
       handleOrderVisible: false,
       selOrderState: { key: '3', label: '已还款' },
       extPrice: '',
+      extLoanTime: undefined,
       extReturnTime: undefined,
       lastloanPrice: '',
       lastloanInterest: '',
@@ -285,6 +289,22 @@ export default {
           this.lastloanInterest = e.lastloanInterest
           this.lastloanServicePrice = e.lastloanServicePrice
         }
+      }, {
+        model: 'button',
+        text: '修改',
+        style: {},
+        icon: '',
+        click: async (e) => {
+          if (e.isVerfiy === 1) {
+            this.$message.error('订单审核已通过，无法修改!')
+            return
+          }
+          if (e.state === 3) {
+            this.$message.error('订单已还款，无法处理!')
+            return
+          }
+          this.$router.push({ path: '/editorder', query: {id: e.id} })
+        }
       }]
       this.fetch({
         ...this.pagination,
@@ -318,7 +338,8 @@ export default {
       let userinfo = this.$utils.Store.get('userinfo')
       let result = await api.getLoanorder({
         ...param,
-        managerId: userinfo.id
+        managerId: userinfo.id,
+        isVerfiy: [1, 2]
       })
       this.searchVisible = false
       this.searchConfirmText = '搜索'
@@ -330,6 +351,7 @@ export default {
           this.data.push({
             key: item.id,
             ...item,
+            stateName: item.isVerfiy === 1 ? item.state === 2 ? `${item.stateName}${item.extCount}` : item.stateName : '审核不通过',
             loanPrice: item.loanPrice / 100,
             loanInterest: item.loanInterest / 100,
             loanServicePrice: item.loanServicePrice / 100,
@@ -341,11 +363,13 @@ export default {
             lastloanInterest: item.lastloanInterest / 100,
             lastloanServicePrice: item.lastloanServicePrice / 100,
             userNamePhone: `${item.userName}-${item.userPhone}`,
-            userChannelSource: `${item.userChannel}-${item.userSource}`,
+            // userChannelSource: `${item.userChannel}-${item.userSource}`,
+            userChannelSource: `${item.userChannel}`,
             addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss'),
             loanTime: this.$utils.Date.format(item.loanTime, 'yyyy-MM-dd hh:mm:ss'),
             updateTime: this.$utils.Date.format(item.updateTime, 'yyyy-MM-dd hh:mm:ss'),
-            shouldReturnTime: this.$utils.Date.format(item.shouldReturnTime, 'yyyy-MM-dd hh:mm:ss')
+            shouldReturnTime: this.$utils.Date.format(item.shouldReturnTime, 'yyyy-MM-dd hh:mm:ss'),
+            verfiyStateName: item.isVerfiy === 1 ? '审核通过' : (item.isVerfiy === 0 ? '审核中' : '审核不通过')
           })
         })
         this.pagination = {
@@ -371,8 +395,8 @@ export default {
     async handleOrder () {
       if (this.selOrderState.key === '2') {
         // 展期
-        if (!this.extPrice) {
-          this.$message.error('请输入展期金额!')
+        if (!this.extLoanTime) {
+          this.$message.error('请输入借款时间!')
           return
         }
         if (!this.extReturnTime) {
@@ -399,6 +423,7 @@ export default {
         loanInterest: parseFloat(this.lastloanInterest) * 100,
         loanServicePrice: parseFloat(this.lastloanServicePrice) * 100,
         extPrice: this.extPrice ? parseFloat(this.extPrice) * 100 : 0,
+        extLoanTime: this.extLoanTime ? this.extLoanTime.unix() * 1000 : 0,
         extReturnTime: this.extReturnTime ? this.extReturnTime.unix() * 1000 : 0,
         remark: this.remark
       })
@@ -406,6 +431,7 @@ export default {
       if (result && result.code === '000000') {
         this.handleOrderVisible = false
         this.extPrice = ''
+        this.extLoanTime = undefined
         this.extReturnTime = undefined
         this.lastloanPrice = ''
         this.lastloanInterest = ''

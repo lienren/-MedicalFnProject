@@ -95,10 +95,6 @@ export default {
         dataIndex: 'iContactPhone',
         width: 100
       }, {
-        title: '审核状态',
-        dataIndex: 'verfiyStateName',
-        width: 80
-      }, {
         title: '添加时间',
         dataIndex: 'addTime',
         width: 150

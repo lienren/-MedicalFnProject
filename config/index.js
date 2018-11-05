@@ -18,21 +18,21 @@ module.exports = {
         }
       },
       '/credit': {
-        target: 'http://inspiring-all.com:20000/credit',
+        target: 'http://localhost:8888/credit',
         changeOrigin: true,
         pathRewrite: {
           '^/credit': ''
         }
       },
       '/super': {
-        target: 'http://inspiring-all.com:20000/super',
+        target: 'http://localhost:8888/super',
         changeOrigin: true,
         pathRewrite: {
           '^/super': ''
         }
       },
       '/base': {
-        target: 'http://inspiring-all.com:20000/base',
+        target: 'http://localhost:8888/base',
         changeOrigin: true,
         pathRewrite: {
           '^/base': ''

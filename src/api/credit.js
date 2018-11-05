@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-10-24 20:57:01
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-10-29 08:42:37
+ * @Last Modified time: 2018-11-02 22:26:13
  */
 'use strict'
 
@@ -54,6 +54,9 @@ export default {
   addLoanorder (body, op = {}) {
     return Vue.$utils.Http.post(`/credit/loanorder/addloanorder`, { ...body }, op)
   },
+  editLoanOrder (body, op = {}) {
+    return Vue.$utils.Http.post(`/credit/loanorder/editloanorder`, { ...body }, op)
+  },
   addLoanorderState (body, op = {}) {
     return Vue.$utils.Http.post(`/credit/loanorder/addloanorderstate`, { ...body }, op)
   },
@@ -68,5 +71,8 @@ export default {
   },
   getStsOrderSort (body, op = {}) {
     return Vue.$utils.Http.post(`/credit/loanorder/getstsordersort`, { ...body }, op)
+  },
+  verfiyLoanOrder (body, op = {}) {
+    return Vue.$utils.Http.post(`/credit/loanorder/verfiy`, { ...body }, op)
   }
 }

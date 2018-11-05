@@ -268,6 +268,11 @@ export default {
         return
       }
 
+      // 将还款时间处理成23:59:59秒的时间戳
+      let shouldReturnTime = this.shouldReturnTime.format('x')
+      shouldReturnTime = parseInt(shouldReturnTime / 1000)
+      shouldReturnTime = (shouldReturnTime - (shouldReturnTime + 8 * 3600) % 86400 + 24 * 3600) * 1000 - 1
+
       let result = await api.addLoanorder({
         userId: parseInt(this.selCustomer),
         userName: cusInfo[0].userName,
@@ -283,14 +288,14 @@ export default {
         loanInterest: parseFloat(this.loanInterest) * 100,
         loanServicePrice: parseFloat(this.loanServicePrice) * 100,
         loanTime: this.loanTime.unix() * 1000,
-        shouldReturnTime: this.shouldReturnTime.unix() * 1000,
+        shouldReturnTime: shouldReturnTime,
         remark: this.remark,
         state: 1
       })
 
       if (result && result.code === '000000') {
         this.clear()
-        this.$message.success('新增订单成功!')
+        this.$message.success('新增订单成功，正在审核!')
       }
     }
   }

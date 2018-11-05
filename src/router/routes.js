@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-10-28 06:04:41
+ * @Last Modified time: 2018-11-02 13:35:30
  */
 'use strict'
 
@@ -162,6 +162,18 @@ export default [
         name: '订单清单',
         component: view('credit/allorderlist'),
         meta: { title: '订单清单' }
+      },
+      {
+        path: '/verfiyorder',
+        name: '审核订单',
+        component: view('credit/verfiyorder'),
+        meta: { title: '审核订单' }
+      },
+      {
+        path: '/editorder',
+        name: '修改订单',
+        component: view('credit/editorder'),
+        meta: { title: '修改订单' }
       }
     ]
   }
