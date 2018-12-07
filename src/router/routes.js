@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-11-02 13:35:30
+ * @Last Modified time: 2018-12-07 15:50:08
  */
 'use strict'
 
@@ -22,7 +22,7 @@ export default [
       {
         path: '/DashBoard',
         name: '首页',
-        component: view('DashBoard_Credit'),
+        component: view('DashBoard_Proof'),
         meta: { title: '首页' }
       },
       {
@@ -174,6 +174,30 @@ export default [
         name: '修改订单',
         component: view('credit/editorder'),
         meta: { title: '修改订单' }
+      }
+    ]
+  },
+  {
+    path: '/proof',
+    component: resolve => require(['../pages/layout/Layout'], resolve),
+    children: [
+      {
+        path: '/loan',
+        name: '单据管理',
+        component: view('proof/loanlist'),
+        meta: { title: '单据管理' }
+      },
+      {
+        path: '/users',
+        name: '用户管理',
+        component: view('proof/userlist'),
+        meta: { title: '用户管理' }
+      },
+      {
+        path: '/servicemoneyconfig',
+        name: '服务费配置',
+        component: view('proof/servicemoneyconfig'),
+        meta: { title: '服务费配置' }
       }
     ]
   }

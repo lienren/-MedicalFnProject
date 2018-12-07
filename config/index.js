@@ -24,6 +24,13 @@ module.exports = {
           '^/credit': ''
         }
       },
+      '/proof': {
+        target: 'http://localhost:20001/proof',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/proof': ''
+        }
+      },
       '/super': {
         target: 'http://localhost:20001/super',
         changeOrigin: true,
@@ -85,7 +92,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/manageproof/',
+    assetsPublicPath: '/',
 
     /**
      * Source Maps

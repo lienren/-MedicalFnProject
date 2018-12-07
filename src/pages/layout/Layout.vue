@@ -19,7 +19,7 @@ export default {
   name: 'layout',
   data () {
     return {
-      logoName: '小额贷款管理平台',
+      logoName: '诚友信凭证管理平台',
       shortLogoName: '平台',
       version: 'Beta1.0.3',
       collapsed: false,
