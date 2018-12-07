@@ -18,28 +18,28 @@ module.exports = {
         }
       },
       '/credit': {
-        target: 'http://localhost:8888/credit',
+        target: 'http://localhost:20001/credit',
         changeOrigin: true,
         pathRewrite: {
           '^/credit': ''
         }
       },
       '/super': {
-        target: 'http://localhost:8888/super',
+        target: 'http://localhost:20001/super',
         changeOrigin: true,
         pathRewrite: {
           '^/super': ''
         }
       },
       '/base': {
-        target: 'http://localhost:8888/base',
+        target: 'http://localhost:20001/base',
         changeOrigin: true,
         pathRewrite: {
           '^/base': ''
         }
       },
       '/ueditor': {
-        target: 'http://localhost:8888/ueditor/',
+        target: 'http://localhost:20001/ueditor/',
         changeOrigin: true,
         pathRewrite: {
           '^/ueditor': ''
@@ -85,7 +85,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/manageproof/',
 
     /**
      * Source Maps
