@@ -204,7 +204,7 @@ export default {
       this.searchConfirmLoading = false
       this.data = []
       if (result) {
-        result = result.result
+        result = result.data
         result.list.forEach(item => {
           this.data.push({
             key: item.id,

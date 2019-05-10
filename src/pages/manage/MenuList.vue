@@ -247,7 +247,7 @@ export default {
       })
       let result = await api.getMenus()
       if (result) {
-        result.result.forEach(val => {
+        result.data.forEach(val => {
           this.parentMenuData.push({
             menuId: val.key,
             menuName: val.title
@@ -264,7 +264,7 @@ export default {
       this.searchConfirmLoading = false
       this.data = []
       if (result) {
-        result = result.result
+        result = result.data
         result.list.forEach(item => {
           this.data.push({
             key: item.id,

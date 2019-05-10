@@ -279,7 +279,7 @@ export default {
               id: e.id
             })
             if (result) {
-              result = result.result
+              result = result.data
               this.info.id = e.id
               this.targetRoleData = result.map((val) => {
                 return `${val.id}`
@@ -382,7 +382,7 @@ export default {
         pageSize: 9999
       })
       if (result) {
-        result = result.result.list
+        result = result.data.list
         result.forEach(role => {
           this.roleData.push({
             key: `${role.id}`,
@@ -422,7 +422,7 @@ export default {
       this.searchConfirmLoading = false
       this.data = []
       if (result) {
-        result = result.result
+        result = result.data
         result.list.forEach(item => {
           this.data.push({
             key: item.id,

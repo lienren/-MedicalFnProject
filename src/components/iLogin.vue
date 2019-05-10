@@ -83,7 +83,7 @@ export default {
     async getImage () {
       this.imgCodeToken = guid()
       let result = await api.getImageCode({ token: this.imgCodeToken }, { load: false })
-      this.imgCodeSrc = result.result.imgbase64
+      this.imgCodeSrc = result.data.imgbase64
     },
     async login () {
       if (this.loginName === '') {
@@ -120,12 +120,12 @@ export default {
 
       if (result.code === '000000') {
         this.$utils.Store.set('userinfo', {
-          ...result.result
+          ...result.data
         })
 
         let resultMenu = await api.getManagerMenu({}, { load: false })
         if (resultMenu) {
-          this.$utils.Store.set('menuinfos', resultMenu.result)
+          this.$utils.Store.set('menuinfos', resultMenu.data)
         }
 
         // 路由跳转

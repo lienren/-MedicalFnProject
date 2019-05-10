@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-12-07 15:50:08
+ * @Last Modified time: 2019-04-03 09:20:03
  */
 'use strict'
 
@@ -22,20 +22,8 @@ export default [
       {
         path: '/DashBoard',
         name: '首页',
-        component: view('DashBoard_Proof'),
+        component: view('DashBoard'),
         meta: { title: '首页' }
-      },
-      {
-        path: '/list',
-        name: '列表功能',
-        component: view('demo/list'),
-        meta: { title: '列表功能' }
-      },
-      {
-        path: '/create',
-        name: '新增功能',
-        component: view('demo/create'),
-        meta: { title: '新增功能' }
       }
     ]
   },
@@ -76,128 +64,50 @@ export default [
     ]
   },
   {
-    path: '/bs',
+    path: '/yp',
     component: resolve => require(['../pages/layout/Layout'], resolve),
     children: [
       {
-        path: '/webabout',
-        name: '关于我们',
-        component: view('website/About'),
-        meta: { title: '关于我们' }
+        path: '/attrs',
+        name: '属性管理',
+        component: view('yp/attrs'),
+        meta: { title: '属性管理' }
       },
       {
-        path: '/deps',
-        name: '科室管理',
-        component: view('bs/deps'),
-        meta: { title: '科室管理' }
+        path: '/members',
+        name: '会员管理',
+        component: view('yp/members'),
+        meta: { title: '会员管理' }
       },
       {
-        path: '/cls',
-        name: '诊所管理',
-        component: view('bs/cls'),
-        meta: { title: '诊所管理' }
+        path: '/bsusers',
+        name: '业务人员管理',
+        component: view('yp/bsusers'),
+        meta: { title: '业务人员管理' }
       },
       {
-        path: '/doctor',
-        name: '医师管理',
-        component: view('bs/doctor'),
-        meta: { title: '医师管理' }
-      }
-    ]
-  },
-  {
-    path: '/credit',
-    component: resolve => require(['../pages/layout/Layout'], resolve),
-    children: [
-      {
-        path: '/intermediary',
-        name: '中介录入',
-        component: view('credit/intermediary'),
-        meta: { title: '中介录入' }
+        path: '/groups',
+        name: '团购管理',
+        component: view('yp/groups'),
+        meta: { title: '团购管理' }
       },
       {
-        path: '/allintermediary',
-        name: '中介清单',
-        component: view('credit/allintermediary'),
-        meta: { title: '中介清单' }
+        path: '/activitys',
+        name: '活动管理',
+        component: view('yp/activitys'),
+        meta: { title: '活动管理' }
       },
       {
-        path: '/verfiyintermediary',
-        name: '中介审核',
-        component: view('credit/verfiyintermediary'),
-        meta: { title: '中介审核' }
+        path: '/sites',
+        name: '场地管理',
+        component: view('yp/sites'),
+        meta: { title: '场地管理' }
       },
       {
-        path: '/customer',
-        name: '客户录入',
-        component: view('credit/customer'),
-        meta: { title: '客户录入' }
-      },
-      {
-        path: '/verfiycustomer',
-        name: '客户审核',
-        component: view('credit/verfiycustomer'),
-        meta: { title: '客户审核' }
-      },
-      {
-        path: '/allcustomer',
-        name: '客户清单',
-        component: view('credit/allcustomer'),
-        meta: { title: '客户清单' }
-      },
-      {
-        path: '/createorder',
-        name: '新增订单',
-        component: view('credit/createorder'),
-        meta: { title: '新增订单' }
-      },
-      {
-        path: '/orderlist',
-        name: '订单列表',
-        component: view('credit/orderlist'),
-        meta: { title: '订单列表' }
-      },
-      {
-        path: '/allorderlist',
-        name: '订单清单',
-        component: view('credit/allorderlist'),
-        meta: { title: '订单清单' }
-      },
-      {
-        path: '/verfiyorder',
-        name: '审核订单',
-        component: view('credit/verfiyorder'),
-        meta: { title: '审核订单' }
-      },
-      {
-        path: '/editorder',
-        name: '修改订单',
-        component: view('credit/editorder'),
-        meta: { title: '修改订单' }
-      }
-    ]
-  },
-  {
-    path: '/proof',
-    component: resolve => require(['../pages/layout/Layout'], resolve),
-    children: [
-      {
-        path: '/loan',
-        name: '单据管理',
-        component: view('proof/loanlist'),
-        meta: { title: '单据管理' }
-      },
-      {
-        path: '/users',
-        name: '用户管理',
-        component: view('proof/userlist'),
-        meta: { title: '用户管理' }
-      },
-      {
-        path: '/servicemoneyconfig',
-        name: '服务费配置',
-        component: view('proof/servicemoneyconfig'),
-        meta: { title: '服务费配置' }
+        path: '/orders',
+        name: '需求订单管理',
+        component: view('yp/orders'),
+        meta: { title: '需求订单管理' }
       }
     ]
   }

@@ -1,18 +1,11 @@
 <template>
   <div>
     <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
-    <a-modal :title="cuTitle" v-model="cuVisible" @ok="addOrupdateAction" :okText="cuConfirmText" cancelText="取消" :confirmLoading="cuConfirmLoading">
-      <a-form>
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='科室名称'>
-          <a-input placeholder='请输入科室名称' v-model="info.depName"></a-input>
-        </a-form-item>
-      </a-form>
-    </a-modal>
   </div>
 </template>
 
 <script>
-import api from '../../api/bs'
+import api from '../../api/youngplay'
 import { iTable } from '../../components/'
 
 export default {
@@ -21,28 +14,11 @@ export default {
   },
   data () {
     return {
-      labelCol: {
-        span: 4
-      },
-      wrapperCol: {
-        span: 14
-      },
-      wrapperButtonCol: {
-        span: 14, offset: 4
-      },
       columns: [],
       data: [],
       pagination: {},
       buttons: [],
-      actionButtons: [],
-      cuVisible: false,
-      cuTitle: '新增科室',
-      cuConfirmLoading: false,
-      cuConfirmText: '确认并保存',
-      info: {
-        id: 0,
-        depName: ''
-      }
+      actionButtons: []
     }
   },
   computed: {
@@ -71,12 +47,16 @@ export default {
         dataIndex: 'id',
         width: 30
       }, {
-        title: '科室名称',
-        dataIndex: 'depName',
+        title: '姓名',
+        dataIndex: 'userName',
         width: 60
       }, {
+        title: '手机号',
+        dataIndex: 'userPhone',
+        width: 80
+      }, {
         title: '添加时间',
-        dataIndex: 'addTime',
+        dataIndex: 'createTime',
         width: 100
       }, {
         title: '操作',
@@ -92,27 +72,8 @@ export default {
           text: '刷新',
           click: () => {
             this.fetch({
-              ...this.pagination,
-              ...this.search
+              ...this.pagination
             })
-          }
-        },
-        {
-          model: 'button',
-          icon: 'edit',
-          text: '新增',
-          click: () => {
-            this.info = {
-              id: 0,
-              loginName: '',
-              loginPwd: '',
-              realName: '',
-              phone: '',
-              state: 1,
-              stateSwitch: true
-            }
-            this.cuVisible = true
-            this.cuTitle = '新增科室'
           }
         }
       ]
@@ -126,11 +87,11 @@ export default {
           confirm: {
             title: '确认要删除吗？',
             confirm: async (e) => {
-              let result = await api.delDep({
+              let result = await api.delUser({
                 id: e.id
               })
               if (result) {
-                this.$message.success('删除成功！')
+                this.$message.success('会员删除成功！')
                 this.fetch({
                   ...this.pagination
                 })
@@ -156,18 +117,19 @@ export default {
       })
     },
     async fetch (param = {}) {
-      let result = await api.getDeps({
+      let result = await api.getUser({
         ...param
       })
       this.data = []
       if (result) {
-        result = result.result
+        result = result.data
         result.list.forEach(item => {
           this.data.push({
             key: item.id,
             id: item.id,
-            depName: item.depName,
-            addTime: this.$utils.Date.format(item.addTime, 'yyyy-MM-dd hh:mm:ss')
+            userPhone: item.userPhone,
+            userName: item.userName,
+            createTime: this.$utils.Date.format(item.createTime, 'yyyy-MM-dd hh:mm:ss')
           })
         })
         this.pagination = {
@@ -182,26 +144,6 @@ export default {
       this.fetch({
         ...this.pagination
       })
-    },
-    async addOrupdateAction () {
-      this.cuConfirmLoading = true
-      this.cuConfirmText = '保存中...'
-
-      let result = await api.addDep({
-        ...this.info
-      })
-
-      if (result) {
-        this.info = {
-          id: 0,
-          depName: ''
-        }
-        this.cuVisible = false
-        this.searchInit()
-      }
-
-      this.cuConfirmLoading = false
-      this.cuConfirmText = '确认并保存'
     }
   }
 }

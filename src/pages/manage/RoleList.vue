@@ -164,7 +164,7 @@ export default {
             let result = await api.getRoleMenu({ id: e.id })
 
             if (result) {
-              this.info.menuIds = result.result
+              this.info.menuIds = result.data
               this.setMenuVisible = true
             }
           }
@@ -223,7 +223,7 @@ export default {
       let result = await api.getMenus({})
 
       if (result) {
-        this.menuData = result.result
+        this.menuData = result.data
       }
     },
     async fetch (param = {}) {
@@ -235,7 +235,7 @@ export default {
       this.searchConfirmLoading = false
       this.data = []
       if (result) {
-        result = result.result
+        result = result.data
         result.list.forEach(item => {
           this.data.push({
             key: item.id,

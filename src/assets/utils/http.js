@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-13 22:29:08
  * @Last Modified by: Lienren
- * @Last Modified time: 2018-10-28 19:04:29
+ * @Last Modified time: 2019-04-02 23:32:41
  */
 'use strict';
 
@@ -33,7 +33,7 @@ function send(url, method, body, options, load, loadMsg, validator, defFail, def
   opts.headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    Authentication: token || '',
+    Authorization: token || '',
     ...opts.headers
   };
   return axios({ method, url, data: body, ...opts })

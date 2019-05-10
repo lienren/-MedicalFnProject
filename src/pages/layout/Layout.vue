@@ -19,9 +19,9 @@ export default {
   name: 'layout',
   data () {
     return {
-      logoName: '诚友信凭证管理平台',
+      logoName: '橙汇玩管理平台',
       shortLogoName: '平台',
-      version: 'Beta1.0.3',
+      version: 'Vers1.2.8',
       collapsed: false,
       menus: [],
       selectMenuKey: '',

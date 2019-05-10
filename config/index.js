@@ -17,36 +17,29 @@ module.exports = {
           '^/demoApi': ''
         }
       },
-      '/credit': {
-        target: 'http://localhost:20001/credit',
+      '/youngplay': {
+        target: 'http://localhost:20000/youngplay',
         changeOrigin: true,
         pathRewrite: {
-          '^/credit': ''
-        }
-      },
-      '/proof': {
-        target: 'http://localhost:20001/proof',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/proof': ''
+          '^/youngplay': ''
         }
       },
       '/super': {
-        target: 'http://localhost:20001/super',
+        target: 'http://localhost:20000/super',
         changeOrigin: true,
         pathRewrite: {
           '^/super': ''
         }
       },
       '/base': {
-        target: 'http://localhost:20001/base',
+        target: 'http://localhost:20000/base',
         changeOrigin: true,
         pathRewrite: {
           '^/base': ''
         }
       },
       '/ueditor': {
-        target: 'http://localhost:20001/ueditor/',
+        target: 'http://localhost:20000/ueditor/',
         changeOrigin: true,
         pathRewrite: {
           '^/ueditor': ''
@@ -92,7 +85,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/yp-manage/',
 
     /**
      * Source Maps
