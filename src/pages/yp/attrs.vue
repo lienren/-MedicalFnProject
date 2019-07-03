@@ -1,13 +1,19 @@
 <template>
   <div>
     <a-tabs defaultActiveKey="1" tabPosition="left"  @change="changeAttrType">
-      <a-tab-pane tab="团购" key="1">
+      <a-tab-pane tab="团建" key="1">
         <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
       </a-tab-pane>
       <a-tab-pane tab="活动" key="2">
         <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
       </a-tab-pane>
       <a-tab-pane tab="场地" key="3">
+        <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
+      </a-tab-pane>
+      <a-tab-pane tab="亲子汇" key="4">
+        <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
+      </a-tab-pane>
+      <a-tab-pane tab="案例" key="5">
         <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
       </a-tab-pane>
     </a-tabs>
@@ -43,9 +49,11 @@ import api from '../../api/youngplay'
 import { iTable } from '../../components/'
 
 let attrTypeList = {
-  '1': '团购',
+  '1': '团建',
   '2': '活动',
-  '3': '场地'
+  '3': '场地',
+  '4': '亲子汇',
+  '5': '案例'
 }
 
 export default {

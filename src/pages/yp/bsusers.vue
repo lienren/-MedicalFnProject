@@ -19,7 +19,7 @@
           </a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='头像'>
-          <a-upload name="avatar" listType="picture-card" class="avatar-uploader" :showUploadList="false" action="//47.99.159.167:20000/base/uploadfile" :beforeUpload="uploadImgBeforeUpload" @change="uploadImgHandleChange">
+          <a-upload name="avatar" listType="picture-card" class="avatar-uploader" :showUploadList="false" action="//manage.youngplay.net/base/uploadfile" :beforeUpload="uploadImgBeforeUpload" @change="uploadImgHandleChange">
             <img v-if="info.busHeadImg" :src="info.busHeadImg" alt="avatar" />
             <div v-else>
               <a-icon :type="uploadImgLoading ? 'loading' : 'plus'" />

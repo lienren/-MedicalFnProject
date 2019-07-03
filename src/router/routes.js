@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-04-03 09:20:03
+ * @Last Modified time: 2019-07-03 08:14:31
  */
 'use strict'
 
@@ -87,9 +87,9 @@ export default [
       },
       {
         path: '/groups',
-        name: '团购管理',
+        name: '团建管理',
         component: view('yp/groups'),
-        meta: { title: '团购管理' }
+        meta: { title: '团建管理' }
       },
       {
         path: '/activitys',
