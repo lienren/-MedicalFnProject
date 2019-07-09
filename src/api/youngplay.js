@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-12-07 12:08:41
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-05-08 19:46:23
+ * @Last Modified time: 2019-07-09 08:23:21
  */
 'use strict'
 
@@ -86,5 +86,35 @@ export default {
   },
   delPlayActivity (body, op = {}) {
     return Vue.$utils.Http.post(`/youngplay/delPlayActivity`, { ...body }, op)
+  },
+  getPlayParentChild (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getPlayParentChild`, { ...body }, op)
+  },
+  getPlayParentChildDetail (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getPlayParentChildDetail`, { ...body }, op)
+  },
+  addPlayParentChild (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/addPlayParentChild`, { ...body }, op)
+  },
+  editPlayParentChild (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/editPlayParentChild`, { ...body }, op)
+  },
+  delPlayParentChild (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/delPlayParentChild`, { ...body }, op)
+  },
+  getPlayCase (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getPlayCase`, { ...body }, op)
+  },
+  getPlayCaseDetail (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getPlayCaseDetail`, { ...body }, op)
+  },
+  addPlayCase (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/addPlayCase`, { ...body }, op)
+  },
+  editPlayCase (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/editPlayCase`, { ...body }, op)
+  },
+  delPlayCase (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/delPlayCase`, { ...body }, op)
   }
 }

@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-07-03 08:14:31
+ * @Last Modified time: 2019-07-09 08:21:58
  */
 'use strict'
 
@@ -108,6 +108,18 @@ export default [
         name: '需求订单管理',
         component: view('yp/orders'),
         meta: { title: '需求订单管理' }
+      },
+      {
+        path: '/parentchild',
+        name: '亲子汇管理',
+        component: view('yp/parentchild'),
+        meta: { title: '亲子汇管理' }
+      },
+      {
+        path: '/case',
+        name: '案例管理',
+        component: view('yp/case'),
+        meta: { title: '案例管理' }
       }
     ]
   }
