@@ -32,13 +32,42 @@
           </a-input>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='主图'>
-          <a-upload name="avatar" listType="picture-card" class="avatar-uploader" :showUploadList="false" action="//manage.youngplay.net/base/uploadfile" :beforeUpload="uploadImgBeforeUpload" @change="uploadImgHandleChange">
+          <a-upload name="avatar" listType="picture-card" class="avatar-uploader" :showUploadList="false" action="http://manage.youngplay.net/base/uploadfile" :beforeUpload="uploadImgBeforeUpload" @change="uploadImgHandleChange">
             <img v-if="info.masterImg" :src="info.masterImg" alt="avatar" style="height:100px;width:auto;" />
             <div v-else>
               <a-icon :type="uploadImgLoading ? 'loading' : 'plus'" />
               <div class="ant-upload-text">上传主图</div>
             </div>
           </a-upload>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="副图">
+          <a-upload
+            action="http://manage.youngplay.net/base/uploadfile"
+            listType="picture-card"
+            :fileList="uploadSubImgFileList"
+            @preview="handleSubImgPreview"
+            @change="handleSubImgChange"
+          >
+            <div v-if="uploadSubImgFileList.length < 4">
+              <a-icon type="plus" />
+              <div class="ant-upload-text">上传副图</div>
+            </div>
+          </a-upload>
+          <a-modal :visible="previewSubImgVisible" :footer="null" @cancel="handleSubImgCancel">
+            <img alt="example" style="width: 100%" :src="previewSubImage" />
+          </a-modal>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="套餐">
+          <a-row type="flex" justify="start" :gutter="16">
+            <a-col :span="6" v-for="(item, index) in info.packAge" :key="index">
+              <a-card :title="item.title">
+                <a href="#" slot="extra" title="删除" @click="delPackage(index)">－</a>
+                <p>{{item.remark}}</p>
+                <p>¥{{item.price}}{{item.unit}}</p>
+              </a-card>
+            </a-col>
+          </a-row>
+          <a-button type="primary" @click="showPackage=true">新增套餐</a-button>
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='描述'>
           <a-tabs defaultActiveKey="1">
@@ -74,6 +103,29 @@
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label='关键字'>
           <a-input placeholder='请输入关键字' v-model="info.tags"></a-input>
           <p style="color:#ff0000;">*关键字之间用英文逗号分隔</p>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal
+      width="80%"
+      title="新增套餐"
+      v-model="showPackage"
+      @ok="addPackage"
+      okText="确认"
+      cancelText="取消"
+    >
+      <a-form>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="套餐标题">
+          <a-input placeholder="请输入套餐标题" v-model="packAgeInfo.title"></a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="套餐描述">
+          <a-input placeholder="请输入套餐描述" v-model="packAgeInfo.remark"></a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="套餐价格">
+          <a-input placeholder="请输入套餐价格" v-model="packAgeInfo.price"></a-input>
+        </a-form-item>
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="套餐单位">
+          <a-input placeholder="请输入套餐单位" v-model="packAgeInfo.unit"></a-input>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -131,11 +183,22 @@ export default {
         r4: '',
         attrs: '',
         tags: '',
-        busUserId: ''
+        busUserId: '',
+        packAge: []
       },
       uploadImgLoading: false,
       attrs: [],
-      busUsers: []
+      busUsers: [],
+      uploadSubImgFileList: [],
+      previewSubImgVisible: false,
+      previewSubImage: '',
+      showPackage: false,
+      packAgeInfo: {
+        title: '',
+        remark: '',
+        price: 0,
+        unit: '/人'
+      }
     }
   },
   computed: {
@@ -223,7 +286,8 @@ export default {
               r4: '',
               attrs: '',
               tags: '',
-              busUserId: ''
+              busUserId: '',
+              packAge: []
             }
 
             this.attrs.forEach(f => {
@@ -270,7 +334,24 @@ export default {
                 r4: result.r4,
                 attrs: result.attrs ? JSON.parse(result.attrs) : [],
                 tags: result.tags,
-                busUserId: result.busUserId
+                busUserId: result.busUserId,
+                packAge: result.packAge
+              }
+
+              if (this.info.subImg && this.info.subImg.length > 0) {
+                this.info.subImg = JSON.parse(this.info.subImg)
+                this.uploadSubImgFileList = this.info.subImg.map((m, i) => {
+                  return {
+                    uid: i.toString(),
+                    name: m.substring(m.lastIndexOf('/')),
+                    status: 'done',
+                    url: m
+                  }
+                })
+              }
+
+              if (this.info.packAge && this.info.packAge.length > 0) {
+                this.info.packAge = JSON.parse(this.info.packAge)
               }
 
               if (this.info.attrs.length > 0) {
@@ -406,6 +487,18 @@ export default {
       this.info.price = parseInt(this.info.price) * 100
       this.info.clsName = '办年会'
 
+      // 保存副图
+      if (this.uploadSubImgFileList) {
+        if (this.uploadSubImgFileList.length > 0) {
+          this.info.subImg = this.uploadSubImgFileList.map(m => {
+            return m.url || m.response.data.filePath
+          })
+          this.info.subImg = JSON.stringify(this.info.subImg)
+        } else {
+          this.info.subImg = '[]'
+        }
+      }
+
       let result
       if (this.info.id > 0) {
         result = await api.editPlayActivity({
@@ -435,7 +528,8 @@ export default {
           r4: '',
           attrs: '',
           tags: '',
-          busUserId: ''
+          busUserId: '',
+          packAge: []
         }
         this.cuVisible = false
         this.searchInit()
@@ -464,6 +558,17 @@ export default {
         this.$message.error('头像不能大于2M!')
       }
       return isJPG && isLt2M
+    },
+    handleSubImgCancel () {
+      this.previewSubImgVisible = false
+    },
+    handleSubImgPreview (file) {
+      this.previewSubImage = file.url || file.thumbUrl
+      this.previewSubImgVisible = true
+    },
+    handleSubImgChange ({ fileList }) {
+      console.log('fileList:', fileList)
+      this.uploadSubImgFileList = fileList
     },
     onAttrChange (changeValues) {
       let attrList = []
@@ -494,6 +599,25 @@ export default {
 
       this.info.attrs = attrList
       this.info.tags = [...new Set(tagList)].toString()
+    },
+    addPackage () {
+      this.info.packAge.push({
+        ...this.packAgeInfo
+      })
+
+      this.packAgeInfo = {
+        title: '',
+        remark: '',
+        price: 0,
+        unit: '/人'
+      }
+
+      this.showPackage = false
+    },
+    delPackage (index) {
+      if (this.info.packAge.length > 0) {
+        this.info.packAge.splice(index, 1)
+      }
     }
   }
 }

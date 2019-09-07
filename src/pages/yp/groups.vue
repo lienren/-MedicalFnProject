@@ -76,7 +76,7 @@
         </a-form-item>
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="副图">
           <a-upload
-            action="//manage.youngplay.net/base/uploadfile"
+            action="http://manage.youngplay.net/base/uploadfile"
             listType="picture-card"
             :fileList="uploadSubImgFileList"
             @preview="handleSubImgPreview"
@@ -622,6 +622,7 @@ export default {
       this.previewSubImgVisible = true
     },
     handleSubImgChange ({ fileList }) {
+      console.log('fileList:', fileList)
       this.uploadSubImgFileList = fileList
     },
     onAttrChange (changeValues) {
