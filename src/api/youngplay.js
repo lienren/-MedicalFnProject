@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-12-07 12:08:41
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-07-09 08:23:21
+ * @Last Modified time: 2019-09-16 14:56:33
  */
 'use strict'
 
@@ -116,5 +116,29 @@ export default {
   },
   delPlayCase (body, op = {}) {
     return Vue.$utils.Http.post(`/youngplay/delPlayCase`, { ...body }, op)
+  },
+  getIndexBannerLink (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getIndexBannerLink`, { ...body }, op)
+  },
+  setIndexBannerLink (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/setIndexBannerLink`, { ...body }, op)
+  },
+  getIndexBigBannerLink (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getIndexBigBannerLink`, { ...body }, op)
+  },
+  setIndexBigBannerLink (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/setIndexBigBannerLink`, { ...body }, op)
+  },
+  getOrder (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getOrder`, { ...body }, op)
+  },
+  updateOrderState (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/updateOrderState`, { ...body }, op)
+  },
+  addOrderRemark (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/addOrderRemark`, { ...body }, op)
+  },
+  getOrderRemark (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getOrderRemark`, { ...body }, op)
   }
 }

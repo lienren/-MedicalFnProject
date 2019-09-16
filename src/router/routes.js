@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-07-09 08:21:58
+ * @Last Modified time: 2019-09-09 23:59:47
  */
 'use strict'
 
@@ -120,6 +120,12 @@ export default [
         name: '案例管理',
         component: view('yp/case'),
         meta: { title: '案例管理' }
+      },
+      {
+        path: '/comms',
+        name: '通用设置',
+        component: view('yp/comms'),
+        meta: { title: '通用设置' }
       }
     ]
   }
