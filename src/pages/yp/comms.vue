@@ -255,6 +255,133 @@
           </a-form-item>
         </a-form>
       </a-tab-pane>
+      <a-tab-pane tab="小程序首页大图" key="3">
+        <p style="color:#ff0000;">*横幅尺寸750*300，只能是jpg或png格式</p>
+        <a-form>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅1图片">
+            <a-upload
+              name="avatar"
+              listType="picture-card"
+              class="avatar-uploader"
+              :showUploadList="false"
+              action="//manage.youngplay.net/base/uploadfile"
+              :beforeUpload="uploadImgBeforeUpload"
+              @change="uploadWxBigImgHandleChange1"
+            >
+              <img
+                v-if="bigWxBannerLink.length>0&&bigWxBannerLink[0].imgUrl"
+                :src="bigWxBannerLink[0].imgUrl"
+                alt="avatar"
+                style="width:200px;height:auto;"
+              />
+              <div v-else>
+                <a-icon :type="uploadImgLoading ? 'loading' : 'plus'" />
+                <div class="ant-upload-text">上传横幅</div>
+              </div>
+            </a-upload>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅1链接地址">
+            <a-input
+              v-if="bigWxBannerLink.length>0"
+              placeholder="请输入链接地址，需要包含http或https"
+              v-model="bigWxBannerLink[0].url"
+            ></a-input>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅2图片">
+            <a-upload
+              name="avatar"
+              listType="picture-card"
+              class="avatar-uploader"
+              :showUploadList="false"
+              action="//manage.youngplay.net/base/uploadfile"
+              :beforeUpload="uploadImgBeforeUpload"
+              @change="uploadWxBigImgHandleChange2"
+            >
+              <img
+                v-if="bigWxBannerLink.length>0&&bigWxBannerLink[1].imgUrl"
+                :src="bigWxBannerLink[1].imgUrl"
+                alt="avatar"
+                style="width:200px;height:auto;"
+              />
+              <div v-else>
+                <a-icon :type="uploadImgLoading ? 'loading' : 'plus'" />
+                <div class="ant-upload-text">上传横幅</div>
+              </div>
+            </a-upload>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅2链接地址">
+            <a-input
+              v-if="bigWxBannerLink.length>0"
+              placeholder="请输入链接地址，需要包含http或https"
+              v-model="bigWxBannerLink[1].url"
+            ></a-input>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅3图片">
+            <a-upload
+              name="avatar"
+              listType="picture-card"
+              class="avatar-uploader"
+              :showUploadList="false"
+              action="//manage.youngplay.net/base/uploadfile"
+              :beforeUpload="uploadImgBeforeUpload"
+              @change="uploadWxBigImgHandleChange3"
+            >
+              <img
+                v-if="bigWxBannerLink.length>0&&bigWxBannerLink[2].imgUrl"
+                :src="bigWxBannerLink[2].imgUrl"
+                alt="avatar"
+                style="width:200px;height:auto;"
+              />
+              <div v-else>
+                <a-icon :type="uploadImgLoading ? 'loading' : 'plus'" />
+                <div class="ant-upload-text">上传横幅</div>
+              </div>
+            </a-upload>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅3链接地址">
+            <a-input
+              v-if="bigWxBannerLink.length>0"
+              placeholder="请输入链接地址，需要包含http或https"
+              v-model="bigWxBannerLink[2].url"
+            ></a-input>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅4图片">
+            <a-upload
+              name="avatar"
+              listType="picture-card"
+              class="avatar-uploader"
+              :showUploadList="false"
+              action="//manage.youngplay.net/base/uploadfile"
+              :beforeUpload="uploadImgBeforeUpload"
+              @change="uploadWxBigImgHandleChange4"
+            >
+              <img
+                v-if="bigWxBannerLink.length>0&&bigWxBannerLink[3].imgUrl"
+                :src="bigWxBannerLink[3].imgUrl"
+                alt="avatar"
+                style="width:200px;height:auto;"
+              />
+              <div v-else>
+                <a-icon :type="uploadImgLoading ? 'loading' : 'plus'" />
+                <div class="ant-upload-text">上传横幅</div>
+              </div>
+            </a-upload>
+          </a-form-item>
+          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="横幅4链接地址">
+            <a-input
+              v-if="bigWxBannerLink.length>0"
+              placeholder="请输入链接地址，需要包含http或https"
+              v-model="bigWxBannerLink[3].url"
+            ></a-input>
+          </a-form-item>
+          <a-form-item :wrapperCol="wrapperButtonCol">
+            <a-button-group>
+              <a-button @click="clearWxIndexBanner">清空</a-button>
+              <a-button type="primary" @click="saveWxIndexBigBanner">确认保存</a-button>
+            </a-button-group>
+          </a-form-item>
+        </a-form>
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>
@@ -279,7 +406,8 @@ export default {
       },
       uploadImgLoading: false,
       bannerLink: [],
-      bigBannerLink: []
+      bigBannerLink: [],
+      bigWxBannerLink: []
     }
   },
   computed: {
@@ -298,6 +426,7 @@ export default {
     init () {
       this.getIndexBannerLink()
       this.getIndexBigBannerLink()
+      this.getWxIndexBigBannerLink()
     },
     async getIndexBannerLink () {
       let result = await api.getIndexBannerLink()
@@ -311,6 +440,13 @@ export default {
 
       if (result && result.data) {
         this.bigBannerLink = result.data
+      }
+    },
+    async getWxIndexBigBannerLink () {
+      let result = await api.getWxIndexBigBannerLink()
+
+      if (result && result.data) {
+        this.bigWxBannerLink = result.data
       }
     },
     uploadImgHandleChange1 (info) {
@@ -393,6 +529,46 @@ export default {
         this.uploadImgLoading = false
       }
     },
+    uploadWxBigImgHandleChange1 (info) {
+      if (info.file.status === 'uploading') {
+        this.uploadImgLoading = true
+        return
+      }
+      if (info.file.status === 'done') {
+        this.bigWxBannerLink[0].imgUrl = info.file.response.data.filePath
+        this.uploadImgLoading = false
+      }
+    },
+    uploadWxBigImgHandleChange2 (info) {
+      if (info.file.status === 'uploading') {
+        this.uploadImgLoading = true
+        return
+      }
+      if (info.file.status === 'done') {
+        this.bigWxBannerLink[1].imgUrl = info.file.response.data.filePath
+        this.uploadImgLoading = false
+      }
+    },
+    uploadWxBigImgHandleChange3 (info) {
+      if (info.file.status === 'uploading') {
+        this.uploadImgLoading = true
+        return
+      }
+      if (info.file.status === 'done') {
+        this.bigWxBannerLink[2].imgUrl = info.file.response.data.filePath
+        this.uploadImgLoading = false
+      }
+    },
+    uploadWxBigImgHandleChange4 (info) {
+      if (info.file.status === 'uploading') {
+        this.uploadImgLoading = true
+        return
+      }
+      if (info.file.status === 'done') {
+        this.bigWxBannerLink[3].imgUrl = info.file.response.data.filePath
+        this.uploadImgLoading = false
+      }
+    },
     uploadImgBeforeUpload (file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJPG) {
@@ -424,12 +600,6 @@ export default {
         }
       ]
     },
-    async saveIndexBanner () {
-      await api.setIndexBannerLink({
-        bannerLink: this.bannerLink
-      })
-      this.$message.success('保存成功!')
-    },
     clearIndexBigBanner () {
       this.bigBannerLink = [
         {
@@ -450,9 +620,41 @@ export default {
         }
       ]
     },
+    clearWxIndexBanner () {
+      this.bigWxBannerLink = [
+        {
+          url: '',
+          imgUrl: ''
+        },
+        {
+          url: '',
+          imgUrl: ''
+        },
+        {
+          url: '',
+          imgUrl: ''
+        },
+        {
+          url: '',
+          imgUrl: ''
+        }
+      ]
+    },
+    async saveIndexBanner () {
+      await api.setIndexBannerLink({
+        bannerLink: this.bannerLink
+      })
+      this.$message.success('保存成功!')
+    },
     async saveIndexBigBanner () {
       await api.setIndexBigBannerLink({
         bannerLink: this.bigBannerLink
+      })
+      this.$message.success('保存成功!')
+    },
+    async saveWxIndexBigBanner () {
+      await api.setWxIndexBigBannerLink({
+        bannerLink: this.bigWxBannerLink
       })
       this.$message.success('保存成功!')
     }

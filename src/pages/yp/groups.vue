@@ -82,7 +82,7 @@
             @preview="handleSubImgPreview"
             @change="handleSubImgChange"
           >
-            <div v-if="uploadSubImgFileList.length < 4">
+            <div v-if="uploadSubImgFileList.length < 5">
               <a-icon type="plus" />
               <div class="ant-upload-text">上传副图</div>
             </div>
@@ -423,10 +423,12 @@ export default {
                   let findAttr = this.attrs.find(f => {
                     return f.id === selAttr.id
                   })
-                  if (findAttr.isCheck === 0) {
-                    findAttr.selectItems = selAttr.val
-                  } else if (findAttr.isCheck === 1) {
-                    findAttr.selectItems.push(selAttr.val)
+                  if (findAttr) {
+                    if (findAttr.isCheck === 0) {
+                      findAttr.selectItems = selAttr.val
+                    } else if (findAttr.isCheck === 1) {
+                      findAttr.selectItems.push(selAttr.val)
+                    }
                   }
                 }
               }

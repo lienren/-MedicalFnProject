@@ -82,7 +82,7 @@
             @preview="handleSubImgPreview"
             @change="handleSubImgChange"
           >
-            <div v-if="uploadSubImgFileList.length < 4">
+            <div v-if="uploadSubImgFileList.length < 5">
               <a-icon type="plus" />
               <div class="ant-upload-text">上传副图</div>
             </div>

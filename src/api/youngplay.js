@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-12-07 12:08:41
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-09-16 14:56:33
+ * @Last Modified time: 2019-09-26 11:18:29
  */
 'use strict'
 
@@ -128,6 +128,12 @@ export default {
   },
   setIndexBigBannerLink (body, op = {}) {
     return Vue.$utils.Http.post(`/youngplay/setIndexBigBannerLink`, { ...body }, op)
+  },
+  getWxIndexBigBannerLink (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getWxIndexBigBannerLink`, { ...body }, op)
+  },
+  setWxIndexBigBannerLink (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/setWxIndexBigBannerLink`, { ...body }, op)
   },
   getOrder (body, op = {}) {
     return Vue.$utils.Http.post(`/youngplay/getOrder`, { ...body }, op)
