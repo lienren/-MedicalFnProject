@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-08-19 10:08:52
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-09-09 23:59:47
+ * @Last Modified time: 2019-10-13 22:18:11
  */
 'use strict'
 
@@ -126,6 +126,12 @@ export default [
         name: '通用设置',
         component: view('yp/comms'),
         meta: { title: '通用设置' }
+      },
+      {
+        path: '/touryes',
+        name: '陶冶户外',
+        component: view('yp/touryes'),
+        meta: { title: '陶冶户外' }
       }
     ]
   }

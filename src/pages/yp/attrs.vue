@@ -16,6 +16,9 @@
       <a-tab-pane tab="案例" key="5">
         <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
       </a-tab-pane>
+      <a-tab-pane tab="陶冶户外" key="6">
+        <iTable :btns="buttons" :actionBtns="actionButtons" :columns="columns" :data="data" :pagination="pagination" :height="tableHeight" @on-change="handleTableChange"></iTable>
+      </a-tab-pane>
     </a-tabs>
     <a-modal :title="cuTitle" v-model="cuVisible" @ok="addOrupdateAction" :okText="cuConfirmText" cancelText="取消" :confirmLoading="cuConfirmLoading">
       <a-form>
@@ -53,7 +56,8 @@ let attrTypeList = {
   '2': '活动',
   '3': '场地',
   '4': '亲子汇',
-  '5': '案例'
+  '5': '案例',
+  '6': '陶冶户外'
 }
 
 export default {

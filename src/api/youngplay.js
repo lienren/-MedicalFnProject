@@ -2,7 +2,7 @@
  * @Author: Lienren
  * @Date: 2018-12-07 12:08:41
  * @Last Modified by: Lienren
- * @Last Modified time: 2019-09-26 11:18:29
+ * @Last Modified time: 2019-10-13 22:19:19
  */
 'use strict'
 
@@ -146,5 +146,20 @@ export default {
   },
   getOrderRemark (body, op = {}) {
     return Vue.$utils.Http.post(`/youngplay/getOrderRemark`, { ...body }, op)
+  },
+  getPlayTourYe (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getPlayTourYe`, { ...body }, op)
+  },
+  getPlayTourYeDetail (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/getPlayTourYeDetail`, { ...body }, op)
+  },
+  addPlayTourYe (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/addPlayTourYe`, { ...body }, op)
+  },
+  editPlayTourYe (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/editPlayTourYe`, { ...body }, op)
+  },
+  delPlayTourYe (body, op = {}) {
+    return Vue.$utils.Http.post(`/youngplay/delPlayTourYe`, { ...body }, op)
   }
 }
